@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Kelasku</string>
+    <string name="welcome_to">Welcome To</string>
+    <string name="kelasku">Kelasku</string>
+    <string name="email_phone_number">Email / Phone Number</string>
+    <string name="enter_your_email_or_phone_number">Enter Your Email or Phone Number</string>
+    <string name="password">Password</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="logo">logo</string>
+    <string name="log_in">Log In</string>
+    <string name="register">Register</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="confirm_your_password">Confirm Your Password</string>
+    <string name="name">Name</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="school">School</string>
+    <string name="enter_your_school">Enter Your School</string>
+    <string name="enter_your_phone_number">Enter Your Phone Number</string>
+    <string name="register_here">Register Here</string>
 </resources>

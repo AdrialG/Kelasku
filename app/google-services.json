@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "11575359761",
+    "project_id": "kelasku-97445",
+    "storage_bucket": "kelasku-97445.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11575359761:android:8eb4d3e7513452cc3eb4b0",
+        "android_client_info": {
+          "package_name": "com.kelompokempat.kelasku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "11575359761-849usl0tqfiv8srk5cjh3fbf0anvt2ld.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGef3UX9jnIoaKgAlUmT3EEm5j6amPghM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "11575359761-849usl0tqfiv8srk5cjh3fbf0anvt2ld.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
