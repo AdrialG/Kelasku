@@ -38,7 +38,7 @@
 
         <ImageView
             android:id="@+id/splash_logo"
-            android:layout_width="100dp"
+            android:layout_width="90dp"
             android:layout_height="100dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="@dimen/_30sdp"

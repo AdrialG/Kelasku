@@ -8,6 +8,7 @@ import com.crocodic.core.extension.openActivity
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityMainBinding
+import com.kelompokempat.kelasku.ui.home.HomeActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import javax.inject.Inject
 
@@ -19,18 +20,20 @@ class MainActivity : NoViewModelActivity<ActivityMainBinding>(R.layout.activity_
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Handler Looper Splash
-        Handler(Looper.getMainLooper()).postDelayed({
-            val isUser = session.getUser()
-            if (isUser == null){
-                openActivity<LoginActivity>()
-                finish()
-            }else{
-//                openActivity<HomeActivity>()
-                finish()
+        openActivity<LoginActivity>()
 
-            }
-        },3000)
+        //Handler Looper Splash
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            val isUser = session.getUser()
+//            if (isUser == null){
+//                openActivity<LoginActivity>()
+//                finish()
+//            }else{
+//                openActivity<HomeActivity>()
+//                finish()
+//
+//            }
+//        },3000)
 
     }
 }
