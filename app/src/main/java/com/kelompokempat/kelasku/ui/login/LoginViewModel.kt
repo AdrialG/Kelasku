@@ -9,7 +9,10 @@ import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.Session
+import com.kelompokempat.kelasku.data.response.LoginResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
@@ -17,26 +20,30 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session) : BaseViewModel() {
 
-    fun login(email_or_phone: String, password: String ) = viewModelScope.launch {
+    private val _loginResponse = MutableSharedFlow<LoginResponse>()
+    val loginResponse = _loginResponse.asSharedFlow()
 
-        _apiResponse.send(ApiResponse(ApiStatus.LOADING))
-        ApiObserver({ apiService.login(email_or_phone, password) },
-            false, object : ApiObserver.ResponseListener {
+    fun login(emailOrPhone: String, password: String ) = viewModelScope.launch {
 
-                override suspend fun onSuccess(response: JSONObject) {
-                    val token = response.getString("token")
-                    val message = response.getString("info")
-                    session.setValue(Const.TOKEN.TOKEN,token)
-                    _apiResponse.send(ApiResponse(ApiStatus.SUCCESS, message = message))
+        ApiObserver.run(
+            block = {apiService.login(emailOrPhone, password)},
+            toast = false,
+            listener = object : ApiObserver.ModelResponseListener<LoginResponse> {
 
+                override suspend fun onLoading(response: LoginResponse) {
+                    _loginResponse.emit(response)
+                    _apiResponse.emit(ApiResponse().responseLoading("Logging In…"))
                 }
 
-                override suspend fun onError(response: ApiResponse) {
-                    super.onError(response)
-                    _apiResponse.send(ApiResponse(ApiStatus.ERROR, message = "Login Failed"))
-
+                override suspend fun onSuccess(response: LoginResponse) {
+                    val user = response.user
+                    _loginResponse.emit(response)
+                    _apiResponse.emit(ApiResponse().responseSuccess("Logged In"))
                 }
-            })
+
+            }
+        )
+
     }
 
 }

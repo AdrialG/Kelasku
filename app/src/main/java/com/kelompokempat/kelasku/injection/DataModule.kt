@@ -17,6 +17,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
@@ -70,6 +71,7 @@ class DataModule {
         return Retrofit.Builder()
             .baseUrl("https://magang.crocodic.net/ki/IlhamM/kelas-ku/public/api/")
             .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build().create(ApiService::class.java)
     }

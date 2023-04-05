@@ -20,4 +20,6 @@
     <string name="enter_your_school">Enter Your School</string>
     <string name="enter_your_phone_number">Enter Your Phone Number</string>
     <string name="register_here">Register Here</string>
+    <string name="logging_in">Logging In…</string>
+    <string name="msg_token_fmt" formatted="true"> %s Token Confirmed</string>
 </resources>

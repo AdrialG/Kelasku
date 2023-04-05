@@ -22,9 +22,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
         super.onCreate(savedInstanceState)
 
         binding.loginButton.setOnClickListener {
-            val email_or_phone = binding.loginInputEmailPn.textOf()
+            val emailOrPhone = binding.loginInputEmailPn.textOf()
             val password = binding.loginInputPassword.textOf()
-            viewModel.login(email_or_phone, password)
+            viewModel.login(emailOrPhone, password)
         }
 
         lifecycleScope.launch {
@@ -50,10 +50,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
             }
         }
 
-
         binding.loginToRegister.setOnClickListener {
             openActivity<RegisterActivity>()
         }
 
     }
+
 }
