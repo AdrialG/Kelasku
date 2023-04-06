@@ -6,6 +6,7 @@ import com.crocodic.core.helper.okhttp.SSLTrust
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.Session
@@ -27,7 +28,7 @@ import javax.net.ssl.SSLContext
 class DataModule {
 
     @Provides
-    fun provideGson() = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create()
+    fun provideGson(): Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create()
 
     @Provides
     fun provideSession(@ApplicationContext context: Context, gson: Gson) = Session(context, gson)
@@ -48,9 +49,11 @@ class DataModule {
             .addInterceptor {  chain ->
                 val original = chain.request()
                 val token = session.getString(Const.TOKEN.TOKEN)
+                val deviceToken = session.getString(Const.TOKEN.DEVICETOKEN)
                 val requestBuilder = original.newBuilder()
                     .header("Authorization", "Bearer $token")
                     .header("Content-Type","application/json")
+                    .header("device_token", deviceToken)
                     .method(original.method,original.body)
 
                 val request = requestBuilder.build()

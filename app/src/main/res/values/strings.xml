@@ -22,4 +22,6 @@
     <string name="register_here">Register Here</string>
     <string name="logging_in">Logging In…</string>
     <string name="msg_token_fmt" formatted="true"> %s Token Confirmed</string>
+    <string name="email">Email</string>
+    <string name="enter_your_email">Enter Your Email</string>
 </resources>
