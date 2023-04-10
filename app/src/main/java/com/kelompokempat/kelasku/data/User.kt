@@ -8,15 +8,21 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class User(
     @Expose
-    @SerializedName("id")
-    val id: Int?,
-    @Expose
-    @SerializedName("image")
-    val image: String?,
-    @Expose
     @SerializedName("name")
     val name: String?,
     @Expose
-    @SerializedName("phone_number")
-    val phoneNumber: String?,
+    @SerializedName("email")
+    val email: String?,
+    @Expose
+    @SerializedName("photo")
+    val photo: String?,
+    @Expose
+    @SerializedName("phone")
+    val phone: String?,
+    @Expose
+    @SerializedName("created_at")
+    val createdAt: String?,
+//    @Expose
+//    @SerializedName("name")
+//    val name: String?,
 ) : Parcelable

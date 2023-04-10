@@ -1,6 +1,7 @@
 package com.kelompokempat.kelasku.api
 
 import com.kelompokempat.kelasku.data.response.LoginResponse
+import com.kelompokempat.kelasku.data.response.RegisterResponse
 import retrofit2.http.*
 
 interface ApiService {
@@ -21,7 +22,7 @@ interface ApiService {
         @Field("password") password: String,
         @Field("password_confirmation") passwordConfirmation: String,
         @Field("school_id") schoolId: Int
-    ): String
+    ): RegisterResponse
 
     @GET("schools")
     suspend fun getSchools(

@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.openActivity
+import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
 import com.crocodic.core.extension.tos
 import com.google.android.gms.tasks.OnCompleteListener
@@ -68,7 +69,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
 
                             ApiStatus.ERROR -> {
                                 loadingDialog.dismiss()
-                                tos(it.message ?: "Login Failed")
+                                binding.root.snacked("Login Failed")
                             }
                             else -> loadingDialog.setResponse("This is the message of all time")
                         }
