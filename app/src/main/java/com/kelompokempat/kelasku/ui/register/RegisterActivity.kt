@@ -50,7 +50,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         }
 
         binding.registerToLogin.setOnClickListener {
-            openActivity<LoginActivity>()
+            finish()
         }
 
         observe()

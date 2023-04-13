@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.kelompokempat.kelasku"
-        minSdk 24
+        minSdk 29
         targetSdk 33
         compileSdk 33
         versionCode 1
