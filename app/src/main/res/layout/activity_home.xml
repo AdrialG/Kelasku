@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="data"
+            type="com.kelompokempat.kelasku.data.FriendsList" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -28,4 +28,8 @@ interface ApiService {
     suspend fun getSchools(
     ): String
 
+    @GET("friends")
+    suspend fun getFriends(
+    ): String
+
 }
