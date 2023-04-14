@@ -1,5 +1,6 @@
 package com.kelompokempat.kelasku.ui.login
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiObserver
 import com.crocodic.core.api.ApiResponse
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +40,7 @@ class LoginViewModel @Inject constructor(private val apiService: ApiService, pri
 
                 override suspend fun onSuccess(response: LoginResponse) {
                     val user = response.user
+                    Log.d("You're Logged In As :", "$user")
                     _loginResponse.emit(response)
                     _apiResponse.emit(ApiResponse().responseSuccess("Logged In"))
                 }

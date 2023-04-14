@@ -14,6 +14,11 @@ interface ApiService {
     ): LoginResponse
 
     @FormUrlEncoded
+    @GET("auth/me")
+    suspend fun getProfile(
+    ): String
+
+    @FormUrlEncoded
     @POST("auth/register")
     suspend fun register(
         @Field("name") name: String,

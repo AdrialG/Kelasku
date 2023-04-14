@@ -11,77 +11,98 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/home_drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/top_card"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:src="@drawable/baseline_menu_24"
-                    android:layout_marginStart="@dimen/_16sdp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/text_top"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/kelasku"
-                    android:textSize="30sp"
-                    android:textColor="@color/main_blue"
-                    android:fontFamily="@font/inter_bold"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/logo"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/text_top"
-                    android:contentDescription="@string/logo" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/home_search"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/search_background"
-            app:searchIcon="@drawable/baseline_person_search_24"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:paddingStart="5dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginHorizontal="@dimen/_24sdp"
-            app:layout_constraintTop_toBottomOf="@id/top_card"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_recycler"
-            android:layout_width="match_parent"
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/home_navigation"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_home_recycler"
-            android:layout_marginTop="140dp"
-            app:layout_constraintTop_toBottomOf="@id/home_search"/>
+            app:headerLayout="@layout/nav_header"
+            app:menu="@menu/nav_menu"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/top_card"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/home_open_nav"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/baseline_menu_24"
+                        android:onClick="openNavigationDrawer"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/text_top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/kelasku"
+                        android:textSize="30sp"
+                        android:textColor="@color/main_blue"
+                        android:fontFamily="@font/inter_bold"
+                        android:layout_marginEnd="20dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/logo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/text_top"
+                        android:contentDescription="@string/logo" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/home_search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/search_background"
+                app:searchIcon="@drawable/baseline_person_search_24"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:paddingStart="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                app:layout_constraintTop_toBottomOf="@id/top_card"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_home_recycler"
+                android:layout_marginTop="140dp"
+                app:layout_constraintTop_toBottomOf="@id/home_search"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>

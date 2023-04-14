@@ -3,13 +3,16 @@ package com.kelompokempat.kelasku.ui.home
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
+import com.crocodic.core.api.ApiResponse
 import com.crocodic.core.extension.toList
+import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
+import com.kelompokempat.kelasku.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,19 +26,37 @@ class HomeViewModel @Inject constructor(private val apiService: ApiService, priv
     private val _friends = MutableSharedFlow<List<FriendsList>>()
     val friends = _friends.asSharedFlow()
 
-    fun getFriends() = viewModelScope.launch {
-        ApiObserver({ apiService.getSchools()},false, object : ApiObserver.ResponseListener{
-            override suspend fun onSuccess(response: JSONObject) {
-                val status = response.getInt(ApiCode.STATUS)
-                if (status == ApiCode.SUCCESS){
-                    val data = response.getJSONArray(ApiCode.DATA).toList<FriendsList>(gson)
-                    _friends.emit(data)
-
-                } else {
-                    val message = response.getString(ApiCode.MESSAGE)
+    fun getProfile(
+    ) = viewModelScope.launch {
+        ApiObserver({ apiService.getProfile() },
+            false, object : ApiObserver.ResponseListener {
+                override suspend fun onSuccess(response: JSONObject) {
+                    val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
+                    _apiResponse.emit(ApiResponse().responseSuccess())
+                    session.saveUser(data)
                 }
-            }
-        })
+
+                override suspend fun onError(response: ApiResponse) {
+                    super.onError(response)
+                    _apiResponse.emit(ApiResponse().responseError())
+                }
+            })
+    }
+
+    fun getFriends() = viewModelScope.launch {
+        ApiObserver({ apiService.getFriends() },
+            false, object : ApiObserver.ResponseListener {
+                override suspend fun onSuccess(response: JSONObject) {
+                    val data = response.getJSONArray(ApiCode.DATA).toList<FriendsList>(gson)
+                    _apiResponse.emit(ApiResponse().responseSuccess())
+                    _friends.emit(data)
+                }
+
+                override suspend fun onError(response: ApiResponse) {
+                    super.onError(response)
+                    _apiResponse.emit(ApiResponse().responseError())
+                }
+            })
     }
 
 }
