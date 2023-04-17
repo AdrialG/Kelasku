@@ -13,7 +13,6 @@ interface ApiService {
         @Field("password") password: String
     ): LoginResponse
 
-    @FormUrlEncoded
     @GET("auth/me")
     suspend fun getProfile(
     ): String

@@ -48,7 +48,7 @@ class DataModule {
 
             .addInterceptor {  chain ->
                 val original = chain.request()
-                val token = session.getString(Const.TOKEN.TOKEN)
+                val token = session.getString(Const.TOKEN.API_TOKEN)
                 val deviceToken = session.getString(Const.TOKEN.DEVICETOKEN)
                 val requestBuilder = original.newBuilder()
                     .header("Authorization", "Bearer $token")

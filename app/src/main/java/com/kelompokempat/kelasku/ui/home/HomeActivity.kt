@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -19,10 +20,12 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
+import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.login.LoginActivity
+import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
@@ -32,6 +35,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
 
+    private val token = Const.TOKEN.API_TOKEN.toString()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,13 +44,23 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 //        getUser()
         getFriends()
 
+        Toast.makeText(this, token, Toast.LENGTH_SHORT).show()
+
+        binding.homeOpenNav.setOnClickListener {
+            this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        binding.temporaryToProfile.setOnClickListener {
+            openActivity<ProfileActivity>()
+        }
+
         binding.homeNavigation.setNavigationItemSelectedListener {
 
             when (it.itemId) {
-                R.id.nav_header_back -> {
-                    binding.homeDrawerLayout.closeDrawer(GravityCompat.START)
-                    return@setNavigationItemSelectedListener true
-                }
+//                R.id.nav_header_back -> {
+//                    binding.homeDrawerLayout.closeDrawer(GravityCompat.START)
+//                    return@setNavigationItemSelectedListener true
+//                }
                 R.id.nav_home -> {
                     binding.root.snacked("You Clicked Home")
                     return@setNavigationItemSelectedListener true
@@ -130,9 +145,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         viewModel.getFriends()
     }
 
-    fun openNavigationDrawer(view: View) {
-        this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
-    }
+//    fun openNavigationDrawer(view: View) {
+//        this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
+//    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()

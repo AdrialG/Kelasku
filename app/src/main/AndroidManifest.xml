@@ -56,6 +56,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+
         <service
             android:name=".fcm.FirebaseMessagingService"
             android:exported="false">
