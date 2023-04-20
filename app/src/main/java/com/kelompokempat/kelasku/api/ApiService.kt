@@ -18,6 +18,13 @@ interface ApiService {
     ): String
 
     @FormUrlEncoded
+    @POST("user/profile")
+    suspend fun updateProfile(
+        @Field("name") name : String,
+        @Field("phone") phone : String
+    ): String
+
+    @FormUrlEncoded
     @POST("auth/register")
     suspend fun register(
         @Field("name") name: String,

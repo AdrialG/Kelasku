@@ -29,12 +29,22 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onCreate(savedInstanceState)
 
         binding.registerButton.setOnClickListener {
-            if (binding.registerInputName.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputEmail.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputPhone.isEmptyRequired(R.string.fill_please) ||
-//                binding.registerInputSchool.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputPassword.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputConfirmPassword.isEmptyRequired(R.string.fill_please)){
+//            if (binding.registerInputName.isEmptyRequired(R.string.fill_please) ||
+//                binding.registerInputEmail.isEmptyRequired(R.string.fill_please) ||
+//                binding.registerInputPhone.isEmptyRequired(R.string.fill_please) ||
+////                binding.registerInputSchool.isEmptyRequired(R.string.fill_please) ||
+//                binding.registerInputPassword.isEmptyRequired(R.string.fill_please) ||
+//                binding.registerInputConfirmPassword.isEmptyRequired(R.string.fill_please)){
+//                return@setOnClickListener
+//            }
+
+            if (listOf(
+                    binding.registerInputName,
+                    binding.registerInputEmail,
+                    binding.registerInputPhone,
+                    binding.registerInputPassword,
+                    binding.registerInputConfirmPassword)
+                    .isEmptyRequired(R.string.fill_please)){
                 return@setOnClickListener
             }
 

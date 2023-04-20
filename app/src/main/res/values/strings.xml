@@ -26,4 +26,9 @@
     <string name="enter_your_email">Enter Your Email</string>
     <string name="fill_please">Please Fill Before Proceeding</string>
     <string name="open">Open</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="edit_password">Edit Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
 </resources>

@@ -10,6 +10,10 @@
             name="data"
             type="com.kelompokempat.kelasku.data.FriendsList" />
 
+        <variable
+            name="user"
+            type="com.kelompokempat.kelasku.data.User" />
+
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -64,15 +68,6 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/text_top"
                         android:contentDescription="@string/logo"/>
-
-                    <Button
-                        android:id="@+id/temporary_to_profile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Profile"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

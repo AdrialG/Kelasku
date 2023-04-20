@@ -28,3 +28,27 @@ class ImageHelper {
     }
 
 }
+
+class ImageBannerHelper {
+    companion object {
+        @JvmStatic
+        @BindingAdapter(value = ["imageBannerUrl"], requireAll = false)
+        fun loadImageRecipe(view: ImageView, imageUrl: String?) {
+
+            view.setImageDrawable(null)
+
+            imageUrl?.let {
+                Glide
+                    .with(view.context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_baseline_image_24)
+                    .error(R.drawable.baseline_error_24)
+                    .into(view)
+
+            }
+
+        }
+
+    }
+
+}

@@ -8,5 +8,8 @@ import com.kelompokempat.kelasku.data.User
 data class LoginResponse (
     @SerializedName("data")
     @Expose
-    val user: User?
+    val user: User?,
+    @SerializedName("token")
+    @Expose
+    val token: String?
 ): ModelResponse()

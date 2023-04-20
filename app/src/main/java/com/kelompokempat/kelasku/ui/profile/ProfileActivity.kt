@@ -33,8 +33,34 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding, ProfileViewModel>(R
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        observe()
         getUser()
 
+        binding.profileBack.setOnClickListener {
+            finish()
+        }
+
+    }
+
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.apiResponse.collect {
+                        when (it.status) {
+                            ApiStatus.SUCCESS -> {
+                                val user = session.getUser()
+                                binding.data = user
+
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun getUser() {

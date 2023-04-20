@@ -41,6 +41,7 @@ class LoginViewModel @Inject constructor(private val apiService: ApiService, pri
                 override suspend fun onSuccess(response: LoginResponse) {
                     val user = response.user
                     Log.d("You're Logged In As :", "$user")
+                    response.token?.let { session.setValue(Const.TOKEN.API_TOKEN, it) }
                     _loginResponse.emit(response)
                     _apiResponse.emit(ApiResponse().responseSuccess("Logged In"))
                 }

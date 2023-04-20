@@ -9,14 +9,22 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import com.kelompokempat.kelasku.R
+import com.kelompokempat.kelasku.data.Const
+import com.kelompokempat.kelasku.data.Session
 import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService() {
+
+    private val session = Session(applicationContext, Gson())
+
     override fun onNewToken(token : String) {
         super.onNewToken(token)
         Log.d("firebasetoken", token)
         sendRegistrationToServer(token)
+
+        session.setValue(Const.TOKEN.DEVICETOKEN, token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

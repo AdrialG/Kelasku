@@ -12,6 +12,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.base.adapter.CoreListAdapter
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
@@ -22,59 +26,59 @@ import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.FriendsList
+import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
+import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
+import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.activity_home) {
+
+    @Inject
+    lateinit var session : Session
+
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
-
-    private val token = Const.TOKEN.API_TOKEN.toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         askNotificationPermission()
-//        getUser()
+        observe()
+        getUser()
         getFriends()
 
-        Toast.makeText(this, token, Toast.LENGTH_SHORT).show()
+        // TODO: Token Confirmation, can't seem to get friendlist & user 
 
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
         }
 
-        binding.temporaryToProfile.setOnClickListener {
-            openActivity<ProfileActivity>()
-        }
-
         binding.homeNavigation.setNavigationItemSelectedListener {
 
             when (it.itemId) {
-//                R.id.nav_header_back -> {
-//                    binding.homeDrawerLayout.closeDrawer(GravityCompat.START)
-//                    return@setNavigationItemSelectedListener true
-//                }
-                R.id.nav_home -> {
-                    binding.root.snacked("You Clicked Home")
+                R.id.nav_header_back -> {
+                    binding.homeDrawerLayout.closeDrawer(GravityCompat.START)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_profile -> {
-                    binding.root.snacked("You Clicked Profile")
+                    openActivity<ProfileActivity>()
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_edit_profile -> {
-                    binding.root.snacked("You Clicked Edit Profile")
+                    openActivity<EditProfileActivity>()
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_edit_password -> {
-                    binding.root.snacked("You Clicked Edit Password")
+                    openActivity<EditPasswordActivity>()
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_logout -> {
@@ -137,6 +141,27 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
     }
 
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.apiResponse.collect {
+                        when (it.status) {
+                            ApiStatus.SUCCESS -> {
+                                val user = session.getUser()
+                                binding.user = user
+
+                            }
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun getUser() {
         viewModel.getProfile()
     }
@@ -144,10 +169,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private fun getFriends() {
         viewModel.getFriends()
     }
-
-//    fun openNavigationDrawer(view: View) {
-//        this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
-//    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()

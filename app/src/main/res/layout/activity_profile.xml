@@ -26,11 +26,10 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/home_open_nav"
+                    android:id="@+id/profile_back"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:src="@drawable/ic_baseline_arrow_back_24"
-                    android:onClick="openNavigationDrawer"
                     android:background="?attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/_16sdp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -68,7 +67,8 @@
             android:id="@+id/profile_banner"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            imageUrl='@{data.bannerPhoto}'
+            imageBannerUrl='@{data.bannerPhoto}'
+            android:scaleType="fitXY"
             app:layout_constraintTop_toBottomOf="@id/top_card"/>
         
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,14 +113,25 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{data.name}'
+            tools:text="Masbro"
+            android:textSize="26sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_bold"
+            app:layout_constraintTop_toBottomOf="@id/profile_picture_case"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/name_card"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:backgroundTint="@color/light_grey"
             app:cardCornerRadius="10dp"
-            android:elevation="20dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="140dp"
             android:layout_marginHorizontal="40dp"
             app:layout_constraintTop_toBottomOf="@id/profile_picture_case">
 
@@ -145,6 +156,7 @@
                     tools:text="I Am Him"
                     android:text='@{data.name}'
                     android:fontFamily="@font/inter_bold"
+                    android:textColor="@color/black"
                     android:textSize="22sp"
                     android:layout_marginBottom="20dp"
                     android:layout_marginStart="20dp"
@@ -173,7 +185,6 @@
             android:layout_height="60dp"
             android:backgroundTint="@color/light_grey"
             app:cardCornerRadius="10dp"
-            android:elevation="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="40dp"
             app:layout_constraintTop_toBottomOf="@id/name_card">
@@ -199,6 +210,7 @@
                     tools:text="school omg"
                     android:text='@{data.schoolName}'
                     android:fontFamily="@font/inter_bold"
+                    android:textColor="@color/black"
                     android:textSize="22sp"
                     android:layout_marginBottom="20dp"
                     android:layout_marginStart="20dp"
@@ -227,7 +239,6 @@
             android:layout_height="60dp"
             android:backgroundTint="@color/light_grey"
             app:cardCornerRadius="10dp"
-            android:elevation="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="40dp"
             app:layout_constraintTop_toBottomOf="@id/school_card">
@@ -253,6 +264,7 @@
                     tools:text="911 call me sumtimes"
                     android:text='@{data.phone}'
                     android:fontFamily="@font/inter_bold"
+                    android:textColor="@color/black"
                     android:textSize="22sp"
                     android:layout_marginBottom="20dp"
                     android:layout_marginStart="20dp"
