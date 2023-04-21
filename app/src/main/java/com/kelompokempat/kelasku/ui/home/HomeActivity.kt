@@ -5,10 +5,7 @@ import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -24,7 +21,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
-import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
@@ -157,6 +153,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                             }
                         }
                     }
+
+                    viewModel.friends.collect {
+                        friendsSpecific.clear()
+                        friends.clear()
+
+                        friendsSpecific.addAll(it)
+                        friends.addAll(it)
+                        binding.homeRecycler.adapter?.notifyDataSetChanged()
+                    }
+
                 }
             }
         }
