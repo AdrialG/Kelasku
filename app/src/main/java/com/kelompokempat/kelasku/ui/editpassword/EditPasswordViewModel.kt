@@ -35,4 +35,19 @@ class EditPasswordViewModel @Inject constructor(private val apiService: ApiServi
             })
     }
 
+    fun updatePassword(oldPassword : String, newPassword : String, passwordConfirmation : String) = viewModelScope.launch {
+        ApiObserver({ apiService.updatePassword(oldPassword, newPassword, passwordConfirmation) },
+            false, object : ApiObserver.ResponseListener {
+                override suspend fun onSuccess(response: JSONObject) {
+                    _apiResponse.emit(ApiResponse().responseSuccess("Password Updated"))
+                }
+
+                override suspend fun onError(response: ApiResponse) {
+                    super.onError(response)
+                    _apiResponse.emit(ApiResponse().responseError())
+                }
+
+            })
+    }
+
 }

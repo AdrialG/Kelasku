@@ -5,7 +5,9 @@ import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -23,6 +25,7 @@ import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
+import com.kelompokempat.kelasku.data.User
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
@@ -30,6 +33,7 @@ import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -44,6 +48,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
 
+    private val navigationView = binding.homeNavigation.getHeaderView(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,7 +58,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         getUser()
         getFriends()
 
-        // TODO: Token Confirmation, can't seem to get friendlist & user 
+        // TODO: Token Confirmation, can't seem to get friendlist & user
+
+        val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
+        val navName = navigationView.findViewById<TextView>(R.id.navigation_name)
+        val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
+
+        navName.setText()
 
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
@@ -86,6 +98,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             }
 
         }
+
+
 
         binding.homeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {

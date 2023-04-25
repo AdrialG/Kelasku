@@ -35,6 +35,14 @@ interface ApiService {
         @Field("school_id") schoolId: Int
     ): RegisterResponse
 
+    @FormUrlEncoded
+    @POST("auth/change-password")
+    suspend fun updatePassword(
+        @Field("old_password") oldPassword : String,
+        @Field("new_password") newPassword : String,
+        @Field("password_confirmation") passwordConfirmation : String
+    ): String
+
     @GET("schools")
     suspend fun getSchools(
     ): String
