@@ -90,6 +90,8 @@
                 android:id="@+id/home_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layoutAnimation="@anim/home_item_start_anim_settings"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_home_recycler"

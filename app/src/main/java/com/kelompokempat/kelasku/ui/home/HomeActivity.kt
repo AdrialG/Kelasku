@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,7 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
-import com.crocodic.core.base.adapter.CoreListAdapter
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.tos
@@ -23,14 +24,13 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
+import com.kelompokempat.kelasku.base.CustomAdapter
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
-import com.kelompokempat.kelasku.data.User
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
-import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
@@ -48,7 +48,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
 
-    private val navigationView = binding.homeNavigation.getHeaderView(0)
+    private lateinit var navigationView : View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +58,24 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         getUser()
         getFriends()
 
-        // TODO: Token Confirmation, can't seem to get friendlist & user
+        val recyclerStartAnim = LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.home_item_start_anim))
+        recyclerStartAnim.delay = 0.20f
+        recyclerStartAnim.order = LayoutAnimationController.ORDER_NORMAL
+        binding.homeRecycler.layoutAnimation = recyclerStartAnim
 
+        binding.textTop.setOnClickListener {
+            binding.homeRecycler.layoutAnimation = recyclerStartAnim
+        }
+
+        navigationView = binding.homeNavigation.getHeaderView(0)
         val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
         val navName = navigationView.findViewById<TextView>(R.id.navigation_name)
         val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
 
-        navName.setText()
+//        navPhoto.set
+        val user = session.getUser()
+        navName.setText(user?.name)
+        navEmail.setText(user?.email)
 
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
@@ -133,11 +144,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             }
         })
 
-        binding.homeRecycler.adapter = CoreListAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler)
+        binding.homeRecycler.adapter = CustomAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler, this)
             .initItem(friends) { position, data ->
-                openActivity<LoginActivity> {
-//                    putExtra(Const.TOUR.TOUR, data)
-                }
+//                openActivity<LoginActivity> {
+////                    putExtra(Const.TOUR.TOUR, data)
+//                }
+                binding.root.snacked("poo")
             }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -167,7 +179,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                             }
                         }
                     }
+                }
 
+                launch {
                     viewModel.friends.collect {
                         friendsSpecific.clear()
                         friends.clear()
@@ -176,7 +190,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                         friends.addAll(it)
                         binding.homeRecycler.adapter?.notifyDataSetChanged()
                     }
-
                 }
             }
         }

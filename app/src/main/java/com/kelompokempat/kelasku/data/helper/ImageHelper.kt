@@ -17,7 +17,7 @@ class ImageHelper {
                 Glide
                     .with(view.context)
                     .load(imageUrl)
-                    .placeholder(R.drawable.baseline_face_24)
+                    .placeholder(R.drawable.default_pfp)
                     .error(R.drawable.baseline_error_24)
                     .into(view)
 
@@ -41,7 +41,7 @@ class ImageBannerHelper {
                 Glide
                     .with(view.context)
                     .load(imageUrl)
-                    .placeholder(R.drawable.ic_baseline_image_24)
+                    .placeholder(R.drawable.default_banner)
                     .error(R.drawable.baseline_error_24)
                     .into(view)
 
