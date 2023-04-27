@@ -33,6 +33,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val isUser = session.getUser()
+        Log.d("isUser", isUser.toString())
+
         binding.loginButton.setOnClickListener {
             val emailOrPhone = binding.loginInputEmailPn.textOf()
             val password = binding.loginInputPassword.textOf()

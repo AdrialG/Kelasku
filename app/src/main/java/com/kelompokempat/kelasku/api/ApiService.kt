@@ -51,4 +51,8 @@ interface ApiService {
     suspend fun getFriends(
     ): String
 
+    @DELETE("auth/logout")
+    suspend fun logout(
+    ):String
+
 }

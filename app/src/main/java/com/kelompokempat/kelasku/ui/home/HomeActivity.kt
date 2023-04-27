@@ -3,11 +3,13 @@ package com.kelompokempat.kelasku.ui.home
 import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
+import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +18,7 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
@@ -31,6 +34,7 @@ import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
+import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
@@ -69,6 +73,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
         navigationView = binding.homeNavigation.getHeaderView(0)
         val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
+        val navBanner = navigationView.findViewById<ImageView>(R.id.navigation_banner)
         val navName = navigationView.findViewById<TextView>(R.id.navigation_name)
         val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
 
@@ -76,6 +81,20 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         val user = session.getUser()
         navName.setText(user?.name)
         navEmail.setText(user?.email)
+
+        Glide
+            .with(navPhoto.context)
+            .load(user?.photo)
+            .placeholder(R.drawable.default_pfp)
+            .error(R.drawable.baseline_error_24)
+            .into(navPhoto)
+
+        Glide
+            .with(navBanner.context)
+            .load(user?.bannerPhoto)
+            .placeholder(R.drawable.default_banner)
+            .error(R.drawable.baseline_error_24)
+            .into(navBanner)
 
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
@@ -101,7 +120,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_logout -> {
-                    binding.root.snacked("You Clicked Logout")
+                    viewModel.logout()
+                    openActivity<LoginActivity> {
+                        finishAffinity()
+                    }
                     return@setNavigationItemSelectedListener true
                 }
 

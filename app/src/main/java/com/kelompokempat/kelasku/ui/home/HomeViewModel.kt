@@ -23,8 +23,7 @@ class HomeViewModel @Inject constructor(private val apiService: ApiService, priv
     private val _friends = MutableSharedFlow<List<FriendsList>>()
     val friends = _friends.asSharedFlow()
 
-    fun getProfile(
-    ) = viewModelScope.launch {
+    fun getProfile() = viewModelScope.launch {
         ApiObserver({ apiService.getProfile() },
             false, object : ApiObserver.ResponseListener {
                 override suspend fun onSuccess(response: JSONObject) {
@@ -47,6 +46,21 @@ class HomeViewModel @Inject constructor(private val apiService: ApiService, priv
                     val data = response.getJSONArray(ApiCode.DATA).toList<FriendsList>(gson)
                     _apiResponse.emit(ApiResponse().responseSuccess())
                     _friends.emit(data)
+                }
+
+                override suspend fun onError(response: ApiResponse) {
+                    super.onError(response)
+                    _apiResponse.emit(ApiResponse().responseError())
+                }
+            })
+    }
+
+    fun logout() = viewModelScope.launch {
+        ApiObserver({ apiService.logout() },
+            false, object : ApiObserver.ResponseListener {
+                override suspend fun onSuccess(response: JSONObject) {
+                    _apiResponse.emit(ApiResponse().responseSuccess())
+                    session.clearUser()
                 }
 
                 override suspend fun onError(response: ApiResponse) {
