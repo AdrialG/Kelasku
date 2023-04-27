@@ -1,6 +1,7 @@
 package com.kelompokempat.kelasku.ui.detail
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -27,14 +28,15 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val id = intent.getStringExtra(friendsList?.id)
+        id?.let { Log.d("friend id", it) }
+
 //        observe()
         getFriendsDetail()
 
         binding.detailBack.setOnClickListener {
             finish()
         }
-
-        val id = intent.getStringExtra(friendsList?.id)
 
     }
 

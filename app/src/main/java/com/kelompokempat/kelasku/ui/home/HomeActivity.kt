@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.crocodic.core.api.ApiStatus
+import com.crocodic.core.base.adapter.CoreListAdapter
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.tos
@@ -170,12 +171,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             }
         })
 
-        binding.homeRecycler.adapter = CustomAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler, this)
+        binding.homeRecycler.adapter = CoreListAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler)
             .initItem(friends) { position, data ->
                 openActivity<DetailActivity> {
                     putExtra(Const.FRIENDS.FRIENDS_ID, friendsList?.id)
                 }
-                binding.root.snacked("poo")
             }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->

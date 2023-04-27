@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,20 +24,20 @@ import kotlinx.coroutines.launch
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>(R.layout.activity_register) {
 
     private val listSchools = ArrayList<Schools>()
-    private var idSchool = ""
+    private var schoolId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding.registerButton.setOnClickListener {
-//            if (binding.registerInputName.isEmptyRequired(R.string.fill_please) ||
-//                binding.registerInputEmail.isEmptyRequired(R.string.fill_please) ||
-//                binding.registerInputPhone.isEmptyRequired(R.string.fill_please) ||
-////                binding.registerInputSchool.isEmptyRequired(R.string.fill_please) ||
-//                binding.registerInputPassword.isEmptyRequired(R.string.fill_please) ||
-//                binding.registerInputConfirmPassword.isEmptyRequired(R.string.fill_please)){
-//                return@setOnClickListener
-//            }
+            if (binding.registerInputName.isEmptyRequired(R.string.fill_please) ||
+                binding.registerInputEmail.isEmptyRequired(R.string.fill_please) ||
+                binding.registerInputPhone.isEmptyRequired(R.string.fill_please) ||
+                binding.registerInputSchool.isEmptyRequired(R.string.fill_please) ||
+                binding.registerInputPassword.isEmptyRequired(R.string.fill_please) ||
+                binding.registerInputConfirmPassword.isEmptyRequired(R.string.fill_please)){
+                return@setOnClickListener
+            }
 
             if (listOf(
                     binding.registerInputName,
@@ -65,27 +66,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
         observe()
         getSchools()
+        autocompleteSpinner()
 
         val schoolsName = listSchools/*.map { it.school_name }*/
-        val adapterSchools = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, schoolsName)
-        binding.registerInputSchool.adapter = adapterSchools
-
-        binding.registerInputSchool.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val dataSelected = listSchools[position]
-                idSchool = dataSelected.id.toString()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -115,6 +98,30 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         viewModel.getSchools()
     }
 
+    private fun autocompleteSpinner(){
+
+        val autoCompleteSpinner = findViewById<AutoCompleteTextView>(R.id.register_input_school)
+        val options = arrayListOf("Choose School") // Replace with your own options
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listSchools)
+        autoCompleteSpinner.setAdapter(adapter)
+
+
+        // Show the dropdown list when the AutoCompleteTextView is clicked
+        autoCompleteSpinner.setOnClickListener {
+            autoCompleteSpinner.showDropDown()
+            autoCompleteSpinner.setDropDownVerticalOffset(-autoCompleteSpinner.height)
+
+        }
+
+        autoCompleteSpinner.setOnItemClickListener { parent, view, position, id ->
+            // Handle item selection here
+            val selectedItem = listSchools[position]
+            schoolId = selectedItem.id.toString()
+
+        }
+
+    }
+
     private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -124,6 +131,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                     }
 
                 }
+
             }
         }
     }
