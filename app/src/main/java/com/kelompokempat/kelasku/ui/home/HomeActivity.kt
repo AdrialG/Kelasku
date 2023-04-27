@@ -3,7 +3,6 @@ package com.kelompokempat.kelasku.ui.home
 import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -28,10 +27,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.base.CustomAdapter
+import com.kelompokempat.kelasku.data.Const
+import com.kelompokempat.kelasku.data.FriendsDetail
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
+import com.kelompokempat.kelasku.ui.detail.DetailActivity
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
@@ -48,6 +50,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
     @Inject
     lateinit var session : Session
+
+    private val friendsList : FriendsList? = null
 
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
@@ -168,9 +172,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
         binding.homeRecycler.adapter = CustomAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler, this)
             .initItem(friends) { position, data ->
-//                openActivity<LoginActivity> {
-////                    putExtra(Const.TOUR.TOUR, data)
-//                }
+                openActivity<DetailActivity> {
+                    putExtra(Const.FRIENDS.FRIENDS_ID, friendsList?.id)
+                }
                 binding.root.snacked("poo")
             }
 
@@ -179,8 +183,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                 Timber.w(TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
-            // Get new FCM registration token 
-        // val token = task.result
         })
 
     }

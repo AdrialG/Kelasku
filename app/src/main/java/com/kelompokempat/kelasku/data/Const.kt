@@ -12,4 +12,8 @@ object Const {
         const val CHANNEL_NAME = "Kelasku Channel Name"
     }
 
+    object FRIENDS {
+        const val FRIENDS_ID ="id_friends"
+    }
+
 }

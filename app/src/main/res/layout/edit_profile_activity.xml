@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -62,15 +63,83 @@
 
         </androidx.cardview.widget.CardView>
 
+        <ImageView
+            android:id="@+id/profile_banner"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            imageBannerUrl='@{data.bannerPhoto}'
+            android:scaleType="fitXY"
+            app:layout_constraintTop_toBottomOf="@id/top_card"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:cardCornerRadius="30dp"
+            android:layout_margin="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/profile_banner"
+            app:layout_constraintEnd_toEndOf="@id/profile_banner">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/banner_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/profile_picture_change"
+                android:background="?attr/selectableItemBackground"
+                android:layout_margin="1dp"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profile_picture_case"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="-140dp"
+            app:layout_constraintTop_toBottomOf="@id/profile_banner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardCornerRadius="85dp"
+                android:layout_margin="5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    imageUrl='@{data.photo}'
+                    android:layout_margin="2dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                app:cardCornerRadius="30dp"
+                android:layout_margin="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_picture_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/profile_picture_change"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_margin="1dp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <LinearLayout
             android:id="@+id/text_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="@dimen/_100sdp"
+            android:layout_marginTop="100dp"
             android:layout_marginHorizontal="@dimen/_30sdp"
-            app:layout_constraintTop_toBottomOf="@id/top_card"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_picture_case"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -91,7 +160,7 @@
                 android:layout_marginTop="5dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/register_input_name"
+                    android:id="@+id/edit_name"
                     android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
@@ -111,25 +180,6 @@
                 android:fontFamily="@font/inter_medium"
                 android:layout_marginTop="15dp" />
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/register_input_school"
-                android:singleLine="true"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:gravity="center"
-                android:hint="@string/enter_your_school"
-                android:textSize="14sp"
-                android:inputType="none" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/email"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/inter_medium"
-                android:layout_marginTop="15dp" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,40 +189,10 @@
                 android:layout_marginTop="5dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/register_input_email"
+                    android:id="@+id/edit_school"
                     android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:text='@{data.email}'
-                    android:gravity="center"
-                    android:background="@drawable/edit_text_bg"
-                    android:textSize="14sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/phone_number"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/inter_medium"
-                android:layout_marginTop="15dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:fontFamily="@font/inter_medium"
-                android:layout_marginTop="5dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/register_input_phone"
-                    android:singleLine="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:text='@{data.phone}'
                     android:gravity="center"
                     android:background="@drawable/edit_text_bg"
                     android:textSize="14sp" />

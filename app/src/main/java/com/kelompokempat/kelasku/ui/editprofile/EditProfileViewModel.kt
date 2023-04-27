@@ -35,8 +35,8 @@ class EditProfileViewModel @Inject constructor(private val apiService: ApiServic
             })
     }
 
-    fun updateUser(name: String, phone: String) = viewModelScope.launch {
-        ApiObserver({ apiService.updateProfile(name, phone) },
+    fun updateUser(name: String, photo: String, school: String, bannerPhoto: String) = viewModelScope.launch {
+        ApiObserver({ apiService.updateProfile(name, photo, school, bannerPhoto) },
             false, object : ApiObserver.ResponseListener {
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)

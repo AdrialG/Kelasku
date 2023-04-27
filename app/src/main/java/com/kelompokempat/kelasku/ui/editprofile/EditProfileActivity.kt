@@ -39,7 +39,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
 
         binding.saveButton.setOnClickListener {
-            validateForm()
+//            validateForm()
         }
 
     }
@@ -72,22 +72,22 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         viewModel.getProfile()
     }
 
-    private fun validateForm() {
-        val name = binding.registerInputName.textOf()
-        val phone = binding.registerInputPhone.textOf()
-
-        if (name.isEmpty()) {
-            binding.root.snacked("Name Can't Be Empty.")
-            return
-        }
-
-        if (phone.isEmpty()) {
-            binding.root.snacked("Telephone Number Can't Be Empty.")
-            return
-        }
-
-        viewModel.updateUser(name, phone)
-
-    }
+//    private fun validateForm() {
+//        val name = binding.editName.textOf()
+//        val school = binding.editSchool.textOf()
+//
+//        if (name.isEmpty()) {
+//            binding.root.snacked("Name Can't Be Empty.")
+//            return
+//        }
+//
+//        if (school.isEmpty()) {
+//            binding.root.snacked("Telephone Number Can't Be Empty.")
+//            return
+//        }
+//
+//        viewModel.updateUser(name, school)
+//
+//    }
 
 }

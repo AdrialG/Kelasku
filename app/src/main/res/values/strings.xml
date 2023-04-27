@@ -31,4 +31,6 @@
     <string name="edit_password">Edit Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
+    <string name="people_like_you">People Like You</string>
+    <string name="alert">Alert</string>
 </resources>

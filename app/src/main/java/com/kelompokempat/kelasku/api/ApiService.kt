@@ -7,6 +7,10 @@ import retrofit2.http.*
 interface ApiService {
 
     @FormUrlEncoded
+    @POST("auth/refresh")
+    suspend fun refreshToken(): String
+
+    @FormUrlEncoded
     @POST("auth/login")
     suspend fun login(
         @Field("email_or_phone") emailOrPhone: String,
@@ -21,7 +25,9 @@ interface ApiService {
     @POST("user/profile")
     suspend fun updateProfile(
         @Field("name") name : String,
-        @Field("phone") phone : String
+        @Field("photo") photo : String,
+        @Field("school_id") school : String,
+        @Field("banner_photo") bannerPhoto : String
     ): String
 
     @FormUrlEncoded
@@ -50,6 +56,16 @@ interface ApiService {
     @GET("friends")
     suspend fun getFriends(
     ): String
+
+    @GET("friends/{id_friends}")
+    suspend fun getFriendsDetail(
+    ): String
+
+    @FormUrlEncoded
+    @POST("colek/{id_friends}")
+    suspend fun colek(
+
+    ): LoginResponse
 
     @DELETE("auth/logout")
     suspend fun logout(
