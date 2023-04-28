@@ -74,6 +74,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
 //    private fun validateForm() {
 //        val name = binding.editName.textOf()
+//        val photo = binding.profilePicture
 //        val school = binding.editSchool.textOf()
 //
 //        if (name.isEmpty()) {
@@ -82,11 +83,11 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 //        }
 //
 //        if (school.isEmpty()) {
-//            binding.root.snacked("Telephone Number Can't Be Empty.")
+//            binding.root.snacked("School Can't Be Empty.")
 //            return
 //        }
 //
-//        viewModel.updateUser(name, school)
+//        viewModel.updateUser(name, photo, school, bannerPhoto)
 //
 //    }
 

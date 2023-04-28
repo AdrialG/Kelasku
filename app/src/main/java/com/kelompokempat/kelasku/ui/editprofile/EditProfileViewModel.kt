@@ -7,6 +7,7 @@ import com.crocodic.core.api.ApiResponse
 import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
+import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.data.User
@@ -16,12 +17,14 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class EditProfileViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session): BaseViewModel() {
+class EditProfileViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session, private val observer: BaseObserver): BaseViewModel() {
 
     fun getProfile(
     ) = viewModelScope.launch {
-        ApiObserver({ apiService.getProfile() },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.getProfile() },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                     _apiResponse.emit(ApiResponse().responseSuccess())
@@ -36,8 +39,10 @@ class EditProfileViewModel @Inject constructor(private val apiService: ApiServic
     }
 
     fun updateUser(name: String, photo: String, school: String, bannerPhoto: String) = viewModelScope.launch {
-        ApiObserver({ apiService.updateProfile(name, photo, school, bannerPhoto) },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.updateProfile(name, photo, school, bannerPhoto) },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                     _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))

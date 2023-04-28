@@ -11,7 +11,7 @@ interface ApiService {
     suspend fun refreshToken(): String
 
     @FormUrlEncoded
-    @POST("auth/login")
+    @POST("auth/login?expires_in=1")
     suspend fun login(
         @Field("email_or_phone") emailOrPhone: String,
         @Field("password") password: String
@@ -38,7 +38,7 @@ interface ApiService {
         @Field("phone") phone: String,
         @Field("password") password: String,
         @Field("password_confirmation") passwordConfirmation: String,
-        @Field("school_id") schoolId: Int
+        @Field("school_id") schoolId: String?
     ): RegisterResponse
 
     @FormUrlEncoded
@@ -57,15 +57,16 @@ interface ApiService {
     suspend fun getFriends(
     ): String
 
-    @GET("friends/{id_friends}")
+    @GET("friends/{id}")
     suspend fun getFriendsDetail(
+        @Path("id") id : String?
     ): String
 
     @FormUrlEncoded
-    @POST("colek/{id_friends}")
+    @POST("colek/{id}")
     suspend fun colek(
-
-    ): LoginResponse
+        @Path("id") id : String?
+    ): String
 
     @DELETE("auth/logout")
     suspend fun logout(

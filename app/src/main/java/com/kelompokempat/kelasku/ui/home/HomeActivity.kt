@@ -1,10 +1,14 @@
 package com.kelompokempat.kelasku.ui.home
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
@@ -21,15 +25,12 @@ import com.bumptech.glide.Glide
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.base.adapter.CoreListAdapter
 import com.crocodic.core.extension.openActivity
-import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.tos
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
-import com.kelompokempat.kelasku.base.CustomAdapter
 import com.kelompokempat.kelasku.data.Const
-import com.kelompokempat.kelasku.data.FriendsDetail
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
@@ -39,12 +40,14 @@ import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
+import com.kelompokempat.kelasku.ui.splash.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.activity_home) {
@@ -125,10 +128,30 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_logout -> {
-                    viewModel.logout()
-                    openActivity<LoginActivity> {
-                        finishAffinity()
-                    }
+
+                    val alert: AlertDialog.Builder = AlertDialog.Builder(this@HomeActivity)
+                    alert.setTitle("Logout")
+                    alert.setMessage("Do you wish to logout?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",
+                            DialogInterface.OnClickListener { dialogInterface, i ->
+                                viewModel.logout()
+                                openActivity<LoginActivity> {
+                                    finishAffinity()
+                                }
+                            })
+                        .setNegativeButton("No",
+                            DialogInterface.OnClickListener { dialogInterface, i ->
+                                dialogInterface.dismiss()
+                            })
+
+                    alert.show()
+
+//                    viewModel.logout()
+//                    openActivity<LoginActivity> {
+//                        finishAffinity()
+//                    }
+
                     return@setNavigationItemSelectedListener true
                 }
 
@@ -136,8 +159,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             }
 
         }
-
-
 
         binding.homeSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -151,7 +172,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
                 if (friendsSearch.isNotEmpty()) {
 
-                    friendsSpecific.forEach {
+                    this@HomeActivity.friendsSpecific.forEach {
                         if (it?.name?.lowercase(Locale.getDefault())!!.contains(friendsSearch)) {
                             friends.add(it)
                         }
@@ -174,7 +195,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         binding.homeRecycler.adapter = CoreListAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler)
             .initItem(friends) { position, data ->
                 openActivity<DetailActivity> {
-                    putExtra(Const.FRIENDS.FRIENDS_ID, friendsList?.id)
+                    putExtra(Const.FRIENDS.FRIENDS_ID, data?.id)
+                    Log.d("home friend id", data?.id.toString())
                 }
             }
 

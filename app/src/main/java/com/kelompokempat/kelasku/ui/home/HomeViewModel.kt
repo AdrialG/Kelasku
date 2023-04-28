@@ -1,5 +1,6 @@
 package com.kelompokempat.kelasku.ui.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
@@ -8,6 +9,7 @@ import com.crocodic.core.extension.toList
 import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
+import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,14 +20,16 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session): BaseViewModel() {
+class HomeViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session, private val observer: BaseObserver): BaseViewModel() {
 
     private val _friends = MutableSharedFlow<List<FriendsList>>()
     val friends = _friends.asSharedFlow()
 
     fun getProfile() = viewModelScope.launch {
-        ApiObserver({ apiService.getProfile() },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.getProfile() },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                     _apiResponse.emit(ApiResponse().responseSuccess())
@@ -40,10 +44,13 @@ class HomeViewModel @Inject constructor(private val apiService: ApiService, priv
     }
 
     fun getFriends() = viewModelScope.launch {
-        ApiObserver({ apiService.getFriends() },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.getFriends() },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONArray(ApiCode.DATA).toList<FriendsList>(gson)
+                    Log.d("friends data", data.toString())
                     _apiResponse.emit(ApiResponse().responseSuccess())
                     _friends.emit(data)
                 }
@@ -56,8 +63,10 @@ class HomeViewModel @Inject constructor(private val apiService: ApiService, priv
     }
 
     fun logout() = viewModelScope.launch {
-        ApiObserver({ apiService.logout() },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.logout() },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     _apiResponse.emit(ApiResponse().responseSuccess())
                     session.clearUser()

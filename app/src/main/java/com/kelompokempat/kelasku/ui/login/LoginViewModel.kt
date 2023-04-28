@@ -27,7 +27,6 @@ class LoginViewModel @Inject constructor(private val apiService: ApiService, pri
     val loginResponse = _loginResponse.asSharedFlow()
 
     fun login(emailOrPhone: String, password: String ) = viewModelScope.launch {
-
         ApiObserver.run(
             block = {apiService.login(emailOrPhone, password)},
             toast = false,

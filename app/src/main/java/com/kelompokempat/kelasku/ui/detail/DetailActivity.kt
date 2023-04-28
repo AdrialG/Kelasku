@@ -8,6 +8,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
+import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.FriendsDetail
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
@@ -22,17 +23,12 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     @Inject
     lateinit var session : Session
 
-    private val friendsList : FriendsList? = null
-    private val friendsDetail : FriendsDetail? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val id = intent.getStringExtra(friendsList?.id)
-        id?.let { Log.d("friend id", it) }
-
-//        observe()
-        getFriendsDetail()
+        observe()
+//        getFriendsDetail()
+        getFriendsData()
 
         binding.detailBack.setOnClickListener {
             finish()
@@ -40,13 +36,15 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 
     }
 
-//    private fun observe() {
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
 //                launch {
 //                    viewModel.apiResponse.collect {
 //                        when (it.status) {
 //                            ApiStatus.SUCCESS -> {
+//                                val friends = viewModel.friends
+//                                binding.data = friends
 //
 //
 //                            }
@@ -56,12 +54,24 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 //                        }
 //                    }
 //                }
-//            }
-//        }
-//    }
 
-    private fun getFriendsDetail() {
-        viewModel.getFriendsDetail(friendsList?.id)
+                launch {
+                    viewModel.friends.collect{ friends ->
+                        binding.data = friends
+                    }
+                }
+            }
+        }
     }
+
+    private fun getFriendsData() {
+        val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
+        viewModel.getFriendsDetail(id)
+        Log.d("friend id", id.toString())
+    }
+
+//    private fun getFriendsDetail() {
+//        viewModel.getFriendsDetail(friendsList?.id)
+//    }
 
 }

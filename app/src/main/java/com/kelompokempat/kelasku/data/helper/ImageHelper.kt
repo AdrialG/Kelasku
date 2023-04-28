@@ -13,14 +13,22 @@ class ImageHelper {
 
             view.setImageDrawable(null)
 
-            imageUrl?.let {
+            if (imageUrl.isNullOrEmpty()) {
                 Glide
                     .with(view.context)
                     .load(imageUrl)
                     .placeholder(R.drawable.default_pfp)
-                    .error(R.drawable.baseline_error_24)
+                    .error(R.drawable.default_pfp)
                     .into(view)
-
+            }
+            else {imageUrl.let {
+                Glide
+                    .with(view.context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.default_pfp)
+                    .error(R.drawable.default_pfp)
+                    .into(view)
+                }
             }
 
         }
@@ -37,18 +45,25 @@ class ImageBannerHelper {
 
             view.setImageDrawable(null)
 
-            imageUrl?.let {
+            if (imageUrl.isNullOrEmpty()) {
                 Glide
                     .with(view.context)
                     .load(imageUrl)
                     .placeholder(R.drawable.default_banner)
-                    .error(R.drawable.baseline_error_24)
+                    .error(R.drawable.default_banner)
                     .into(view)
+            } else {
+                imageUrl.let {
+                    Glide
+                        .with(view.context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.default_banner)
+                        .error(R.drawable.default_banner)
+                        .into(view)
+                }
 
             }
 
         }
-
     }
-
 }

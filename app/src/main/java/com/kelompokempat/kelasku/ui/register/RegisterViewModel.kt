@@ -4,16 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
 import com.crocodic.core.api.ApiResponse
-import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.toList
-import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
-import com.kelompokempat.kelasku.data.User
-import com.kelompokempat.kelasku.data.response.LoginResponse
 import com.kelompokempat.kelasku.data.response.RegisterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,8 +41,7 @@ class RegisterViewModel @Inject constructor(private val apiService: ApiService, 
         })
     }
 
-    fun register(name: String, email: String, phone: String, password: String, passwordConfirmation: String, schoolId: Int) = viewModelScope.launch {
-
+    fun register(name: String, email: String, phone: String, password: String, passwordConfirmation: String, schoolId: String?) = viewModelScope.launch {
         ApiObserver.run(
             block = {apiService.register(name, email, phone, password, passwordConfirmation, schoolId)},
             toast = false,
@@ -54,13 +49,13 @@ class RegisterViewModel @Inject constructor(private val apiService: ApiService, 
 
                 override suspend fun onLoading(response: RegisterResponse) {
                     _registerResponse.emit(response)
-                    _apiResponse.emit(ApiResponse().responseLoading("Logging In…"))
+                    _apiResponse.emit(ApiResponse().responseLoading("Signing In…"))
                 }
 
                 override suspend fun onSuccess(response: RegisterResponse) {
                     val user = response.user
                     _registerResponse.emit(response)
-                    _apiResponse.emit(ApiResponse().responseSuccess("Logged In"))
+                    _apiResponse.emit(ApiResponse().responseSuccess("Signed In"))
                 }
 
             }

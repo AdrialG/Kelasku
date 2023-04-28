@@ -1,19 +1,18 @@
 package com.kelompokempat.kelasku.ui.register
 
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.crocodic.core.api.ApiResponse
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.*
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
+import com.kelompokempat.kelasku.data.response.RegisterResponse
 import com.kelompokempat.kelasku.databinding.ActivityRegisterBinding
 import com.kelompokempat.kelasku.ui.home.HomeActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
@@ -52,11 +51,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             val name = binding.registerInputName.textOf()
             val email = binding.registerInputEmail.textOf()
             val phone = binding.registerInputPhone.textOf()
-            val schools = binding.registerInputSchool
+            val schools = schoolId
             val password = binding.registerInputPassword.textOf()
             val confirmPassword = binding.registerInputPassword.textOf()
 
-//            viewModel.register( name, email,  phone, password, confirmPassword, schools)
+            viewModel.register( name, email,  phone, password, confirmPassword, schools)
 
         }
 
@@ -75,10 +74,10 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 launch {
                     viewModel.apiResponse.collect {
                         when (it.status) {
-                            ApiStatus.LOADING -> loadingDialog.show("Hang Tight...")
+                            ApiStatus.LOADING -> loadingDialog.show("Signing In…")
                             ApiStatus.SUCCESS -> {
                                 loadingDialog.dismiss()
-                                openActivity<LoginActivity>()
+                                openActivity<HomeActivity>()
                                 finish()
                             }
                             ApiStatus.ERROR -> {

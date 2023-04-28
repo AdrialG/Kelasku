@@ -13,7 +13,7 @@ object Const {
     }
 
     object FRIENDS {
-        const val FRIENDS_ID ="id_friends"
+        const val FRIENDS_ID ="id"
     }
 
 }

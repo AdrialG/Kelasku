@@ -8,6 +8,7 @@ import com.crocodic.core.extension.toList
 import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
+import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
@@ -20,12 +21,14 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session): BaseViewModel() {
+class ProfileViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session, private val observer: BaseObserver): BaseViewModel() {
 
     fun getProfile(
     ) = viewModelScope.launch {
-        ApiObserver({ apiService.getProfile() },
-            false, object : ApiObserver.ResponseListener {
+        observer(
+            block = { apiService.getProfile() },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                     _apiResponse.emit(ApiResponse().responseSuccess())

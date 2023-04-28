@@ -13,4 +13,8 @@ data class Schools(
     @Expose
     @SerializedName("school_name")
     val school_name: String
-) : Parcelable
+) : Parcelable {
+    override fun toString(): String {
+        return school_name
+    }
+}
