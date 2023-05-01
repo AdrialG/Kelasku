@@ -193,7 +193,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <AutoCompleteTextView
-                    android:id="@+id/register_input_school"
+                    android:id="@+id/edit_input_school"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text='@{data.schoolName}'
