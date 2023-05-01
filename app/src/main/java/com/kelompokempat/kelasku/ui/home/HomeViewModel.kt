@@ -20,7 +20,12 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session, private val observer: BaseObserver): BaseViewModel() {
+class HomeViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val gson: Gson,
+    private val session: Session,
+    private val observer: BaseObserver
+    ): BaseViewModel() {
 
     private val _friends = MutableSharedFlow<List<FriendsList>>()
     val friends = _friends.asSharedFlow()

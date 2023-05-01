@@ -6,7 +6,6 @@ import retrofit2.http.*
 
 interface ApiService {
 
-    @FormUrlEncoded
     @POST("auth/refresh")
     suspend fun refreshToken(): String
 
@@ -25,7 +24,22 @@ interface ApiService {
     @POST("user/profile")
     suspend fun updateProfile(
         @Field("name") name : String,
-        @Field("photo") photo : String,
+        @Field("school_id") school : String
+    ): String
+
+    @FormUrlEncoded
+    @POST("user/profile")
+    suspend fun updateProfilePicture(
+        @Field("name") name : String,
+        @Field("school_id") school : String,
+        @Field("photo") photo : String
+    ): String
+
+
+    @FormUrlEncoded
+    @POST("user/profile")
+    suspend fun updateProfileBanner(
+        @Field("name") name : String,
         @Field("school_id") school : String,
         @Field("banner_photo") bannerPhoto : String
     ): String

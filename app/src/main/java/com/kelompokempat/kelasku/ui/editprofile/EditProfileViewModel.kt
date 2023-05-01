@@ -17,7 +17,12 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class EditProfileViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session, private val observer: BaseObserver): BaseViewModel() {
+class EditProfileViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val gson: Gson,
+    private val session: Session,
+    private val observer: BaseObserver
+    ): BaseViewModel() {
 
     fun getProfile(
     ) = viewModelScope.launch {

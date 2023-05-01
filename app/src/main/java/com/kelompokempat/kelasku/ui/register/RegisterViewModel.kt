@@ -19,7 +19,11 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session): BaseViewModel() {
+class RegisterViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val gson: Gson,
+    private val session: Session
+    ): BaseViewModel() {
 
     private val _schools = MutableSharedFlow<List<Schools>>()
     val schools = _schools.asSharedFlow()

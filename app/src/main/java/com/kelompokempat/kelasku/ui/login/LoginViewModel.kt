@@ -21,7 +21,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val apiService: ApiService, private val gson: Gson, private val session: Session) : BaseViewModel() {
+class LoginViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val gson: Gson,
+    private val session: Session
+    ) : BaseViewModel() {
 
     private val _loginResponse = MutableSharedFlow<LoginResponse>()
     val loginResponse = _loginResponse.asSharedFlow()
