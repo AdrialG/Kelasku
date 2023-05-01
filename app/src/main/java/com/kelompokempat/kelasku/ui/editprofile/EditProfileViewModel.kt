@@ -13,7 +13,11 @@ import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,9 +47,9 @@ class EditProfileViewModel @Inject constructor(
             })
     }
 
-    fun updateUser(name: String, photo: String, school: String, bannerPhoto: String) = viewModelScope.launch {
+    fun updateProfile(name: String, school: String) = viewModelScope.launch {
         observer(
-            block = { apiService.updateProfile(name, photo, school, bannerPhoto) },
+            block = { apiService.updateProfile(name, school) },
             toast = false,
             responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
@@ -61,5 +65,68 @@ class EditProfileViewModel @Inject constructor(
 
             })
     }
+
+    fun updateProfilePicture(name: String, school: String, photo: File) =
+        viewModelScope.launch {
+            val fileBody = photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePart = MultipartBody.Part.createFormData("image", photo.name, fileBody)
+            ApiObserver({ apiService.updateProfilePicture(name, school, filePart) },
+                false, object : ApiObserver.ResponseListener {
+                    override suspend fun onSuccess(response: JSONObject) {
+                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
+                        _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
+                        session.saveUser(data)
+                    }
+
+                    override suspend fun onError(response: ApiResponse) {
+                        super.onError(response)
+                        _apiResponse.emit(ApiResponse().responseError())
+                    }
+
+                })
+        }
+
+    fun updateProfileBanner(name: String, school: String, banner_photo: File) =
+        viewModelScope.launch {
+            val fileBody = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePart = MultipartBody.Part.createFormData("image", banner_photo.name, fileBody)
+            ApiObserver({ apiService.updateProfileBanner(name, school, filePart) },
+                false, object : ApiObserver.ResponseListener {
+                    override suspend fun onSuccess(response: JSONObject) {
+                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
+                        _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
+                        session.saveUser(data)
+                    }
+
+                    override suspend fun onError(response: ApiResponse) {
+                        super.onError(response)
+                        _apiResponse.emit(ApiResponse().responseError())
+                    }
+
+                })
+        }
+
+    fun updateProfileAll(name: String, school: String, photo: File, banner_photo: File) =
+        viewModelScope.launch {
+            val fileBodyPicture = photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePartPicture = MultipartBody.Part.createFormData("image", photo.name, fileBodyPicture)
+            val fileBodyBanner = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePartBanner = MultipartBody.Part.createFormData("image", banner_photo.name, fileBodyBanner)
+            ApiObserver({ apiService.updateProfileAll(name, school, filePartPicture, filePartBanner) },
+                false, object : ApiObserver.ResponseListener {
+                    override suspend fun onSuccess(response: JSONObject) {
+                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
+                        _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
+                        session.saveUser(data)
+                    }
+
+                    override suspend fun onError(response: ApiResponse) {
+                        super.onError(response)
+                        _apiResponse.emit(ApiResponse().responseError())
+                    }
+
+                })
+        }
+
 
 }

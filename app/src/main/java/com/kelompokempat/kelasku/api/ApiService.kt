@@ -2,6 +2,7 @@ package com.kelompokempat.kelasku.api
 
 import com.kelompokempat.kelasku.data.response.LoginResponse
 import com.kelompokempat.kelasku.data.response.RegisterResponse
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface ApiService {
@@ -27,21 +28,30 @@ interface ApiService {
         @Field("school_id") school : String
     ): String
 
-    @FormUrlEncoded
+    @Multipart
     @POST("user/profile")
     suspend fun updateProfilePicture(
-        @Field("name") name : String,
-        @Field("school_id") school : String,
-        @Field("photo") photo : String
+        @Part("name") name : String,
+        @Part("school_id") school : String,
+        @Part photo : MultipartBody.Part?
     ): String
 
 
-    @FormUrlEncoded
+    @Multipart
     @POST("user/profile")
     suspend fun updateProfileBanner(
-        @Field("name") name : String,
-        @Field("school_id") school : String,
-        @Field("banner_photo") bannerPhoto : String
+        @Part("name") name : String,
+        @Part("school_id") school : String,
+        @Part banner_photo : MultipartBody.Part?
+    ): String
+
+    @Multipart
+    @POST("user/profile")
+    suspend fun updateProfileAll(
+        @Part("name") name : String,
+        @Part("school_id") school : String,
+        @Part photo : MultipartBody.Part?,
+        @Part banner_photo : MultipartBody.Part?
     ): String
 
     @FormUrlEncoded
