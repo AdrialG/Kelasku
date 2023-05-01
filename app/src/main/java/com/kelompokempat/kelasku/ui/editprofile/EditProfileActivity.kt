@@ -27,9 +27,7 @@ import com.crocodic.core.helper.DateTimeHelper
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Session
-import com.kelompokempat.kelasku.databinding.ActivityProfileBinding
 import com.kelompokempat.kelasku.databinding.EditProfileActivityBinding
-import com.kelompokempat.kelasku.ui.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.format
@@ -67,6 +65,23 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
         binding.editProfileBack.setOnClickListener {
             finish()
+        }
+
+
+        binding.profilePictureEdit.setOnClickListener {
+            if (checkPermissionGallery()) {
+            openGallery()
+            } else {
+                requestPermissionGallery()
+            }
+        }
+
+        binding.bannerEdit.setOnClickListener {
+            if (checkPermissionGallery()) {
+                openGallery()
+            } else {
+                requestPermissionGallery()
+            }
         }
 
         binding.saveButton.setOnClickListener {
@@ -168,11 +183,19 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
     }
 
-    //MultiPart Gallery
+    //MultiPart Gallery Profile Picture
     private var activityLauncherGallery =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             result.data?.data?.let {
                 generateFileImage(it)
+            }
+        }
+
+    //MultiPart Gallery Banner
+    private var activityLauncherGalleryBanner =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            result.data?.data?.let {
+                generateFileBanner(it)
             }
         }
 
@@ -184,10 +207,16 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    // function Open Gallery
+    // function Open Gallery for Profile Picture
     private fun openGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         activityLauncherGallery.launch(galleryIntent)
+    }
+
+    // function Open Gallery for Banner
+    private fun openGalleryBanner() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        activityLauncherGalleryBanner.launch(galleryIntent)
     }
 
     // Request Permission Gallery
@@ -228,7 +257,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             val file = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 createImageFile()
             } else {
-                //File("${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)}" + File.separator + "BurgerBangor", getNewFileName())
                 File(externalCacheDir?.absolutePath, getNewFileName())
             }
 
@@ -251,6 +279,46 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
             binding.profilePicture.setImageBitmap(bitmap)
             filePhotoPicture = file
+            Timber.tag("checkfile").d("file : %s", filePhotoPicture)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            binding.root.snacked("This File Can't Be Used")
+        }
+    }
+
+    private fun generateFileBanner(uri: Uri) {
+        try {
+            val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
+            val fileDescriptor = parcelFileDescriptor?.fileDescriptor
+            val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+            parcelFileDescriptor?.close()
+
+            val orientation = getOrientation2(uri)
+            val file = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                createImageFile()
+            } else {
+                File(externalCacheDir?.absolutePath, getNewFileName())
+            }
+
+            val fos = FileOutputStream(file)
+            var bitmap = image
+
+            if (orientation != -1 && orientation != 0) {
+
+                val matrix = Matrix()
+                when (orientation) {
+                    6 -> matrix.postRotate(90f)
+                    3 -> matrix.postRotate(180f)
+                    8 -> matrix.postRotate(270f)
+                    else -> matrix.postRotate(orientation.toFloat())
+                }
+                bitmap =
+                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            }
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+            binding.profileBanner.setImageBitmap(bitmap)
+            filePhotoBanner = file
             Timber.tag("checkfile").d("file : %s", filePhotoPicture)
         } catch (e: Exception) {
             e.printStackTrace()
