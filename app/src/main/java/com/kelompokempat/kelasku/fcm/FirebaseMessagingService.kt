@@ -36,7 +36,10 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         Timber.d("firebase_receive_message_title : ${message.data["title"]}")
         Timber.d("firebase_receive_message_message : ${message.data["message"]}")
 
-        showNotification(context, message.data["user_id"].toString(), message.data["title"].toString(), message.data["message"].toString())
+        val notificationId = System.currentTimeMillis().toInt()
+        showNotification(context, notificationId, message.data["user_id"].toString(), message.data["title"].toString(), message.data["message"].toString())
+
+//        showNotification(context, message.data["user_id"].toString(), message.data["title"].toString(), message.data["message"].toString())
     }
 
 }
@@ -46,7 +49,37 @@ private fun sendRegistrationToServer(token: String?) {
     Log.d(TAG, "sendRegistrationTokenToServer($token)")
 }
 
-fun showNotification(context: Context, user_id: String, title: String, message: String) {
+//fun showNotification(context: Context, user_id: String, title: String, message: String) {
+//    // Notification Manager
+//    val notificationManager =
+//        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//
+//    // Notification for Oreo >
+//    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//        val channel = NotificationChannel(
+//           "CHANNEL_ID",
+//            "My Channel",
+//            NotificationManager.IMPORTANCE_DEFAULT
+//        )
+//        channel.description = "Mhm"
+//        channel.enableLights(true)
+//        channel.enableVibration(true)
+//        notificationManager.createNotificationChannel(channel)
+//    }
+//
+//    // Builder
+//    val builder = NotificationCompat.Builder(context, "CHANNEL_ID")
+//        .setSmallIcon(R.drawable.logo)
+//        .setContentInfo(user_id)
+//        .setContentTitle(title)
+//        .setContentText(message)
+//        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//
+//    // Show Notification
+//    notificationManager.notify(1, builder.build())
+//}
+
+fun showNotification(context: Context, notificationId: Int, user_id: String, title: String, message: String) {
     // Notification Manager
     val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -54,7 +87,7 @@ fun showNotification(context: Context, user_id: String, title: String, message: 
     // Notification for Oreo >
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
-           "CHANNEL_ID",
+            "CHANNEL_ID",
             "My Channel",
             NotificationManager.IMPORTANCE_DEFAULT
         )
@@ -73,5 +106,5 @@ fun showNotification(context: Context, user_id: String, title: String, message: 
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
     // Show Notification
-    notificationManager.notify(1, builder.build())
+    notificationManager.notify(notificationId, builder.build())
 }
