@@ -10,6 +10,7 @@ import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
+import com.crocodic.core.extension.tos
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
@@ -35,6 +36,8 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding, ProfileViewModel>(R
 
         observe()
         getUser()
+
+        tos("school : ${session.getUser()?.school?.school_name}")
 
         binding.profileBack.setOnClickListener {
             finish()

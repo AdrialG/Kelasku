@@ -278,7 +278,7 @@
                     android:layout_width="@dimen/_180sdp"
                     android:layout_height="30dp"
                     tools:text="school omg"
-                    android:text='@{data.schoolName}'
+                    android:text='@{data.school.school_name}'
                     android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="22sp"

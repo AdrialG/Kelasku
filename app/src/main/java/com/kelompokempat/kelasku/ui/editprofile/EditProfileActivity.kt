@@ -96,7 +96,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                 launch {
                     viewModel.apiResponse.collect {
                         when (it.status) {
-                            ApiStatus.LOADING -> loadingDialog.show("Update Profile")
+                            ApiStatus.LOADING -> loadingDialog.show("Updating Profile...")
                             ApiStatus.SUCCESS -> {
                                 binding.root.snacked(it.message ?: "Profile Updated")
                                 loadingDialog.dismiss()

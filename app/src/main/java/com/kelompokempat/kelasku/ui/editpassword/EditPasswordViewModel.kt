@@ -1,5 +1,6 @@
 package com.kelompokempat.kelasku.ui.editpassword
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
@@ -14,6 +15,7 @@ import com.kelompokempat.kelasku.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,6 +47,7 @@ class EditPasswordViewModel @Inject constructor(
 
     fun updatePassword(oldPassword: String, newPassword: String, passwordConfirmation: String) =
         viewModelScope.launch {
+            Timber.d("wake up")
             observer(
                 block = {
                     apiService.updatePassword(

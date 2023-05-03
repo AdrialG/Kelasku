@@ -79,31 +79,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             binding.homeRecycler.layoutAnimation = recyclerStartAnim
         }
 
-        navigationView = binding.homeNavigation.getHeaderView(0)
-        val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
-        val navBanner = navigationView.findViewById<ImageView>(R.id.navigation_banner)
-        val navName = navigationView.findViewById<TextView>(R.id.navigation_name)
-        val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
-
-//        navPhoto.set
-        val user = session.getUser()
-        navName.setText(user?.name)
-        navEmail.setText(user?.email)
-
-        Glide
-            .with(navPhoto.context)
-            .load(user?.photo)
-            .placeholder(R.drawable.default_pfp)
-            .error(R.drawable.baseline_error_24)
-            .into(navPhoto)
-
-        Glide
-            .with(navBanner.context)
-            .load(user?.bannerPhoto)
-            .placeholder(R.drawable.default_banner)
-            .error(R.drawable.baseline_error_24)
-            .into(navBanner)
-
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
         }
@@ -243,6 +218,30 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
     private fun getUser() {
         viewModel.getProfile()
+
+        navigationView = binding.homeNavigation.getHeaderView(0)
+        val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
+        val navBanner = navigationView.findViewById<ImageView>(R.id.navigation_banner)
+        val navName = navigationView.findViewById<TextView>(R.id.navigation_name)
+        val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
+
+        val user = session.getUser()
+        navName.setText(user?.name)
+        navEmail.setText(user?.email)
+
+        Glide
+            .with(navPhoto.context)
+            .load(user?.photo)
+            .placeholder(R.drawable.default_pfp)
+            .error(R.drawable.baseline_error_24)
+            .into(navPhoto)
+
+        Glide
+            .with(navBanner.context)
+            .load(user?.bannerPhoto)
+            .placeholder(R.drawable.default_banner)
+            .error(R.drawable.baseline_error_24)
+            .into(navBanner)
     }
 
     private fun getFriends() {
