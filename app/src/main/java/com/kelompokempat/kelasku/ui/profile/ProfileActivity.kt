@@ -37,8 +37,6 @@ class ProfileActivity : BaseActivity<ActivityProfileBinding, ProfileViewModel>(R
         observe()
         getUser()
 
-        tos("school : ${session.getUser()?.school?.school_name}")
-
         binding.profileBack.setOnClickListener {
             finish()
         }

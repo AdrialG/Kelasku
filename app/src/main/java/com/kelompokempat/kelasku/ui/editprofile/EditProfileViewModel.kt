@@ -1,17 +1,22 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
 import com.crocodic.core.api.ApiResponse
+import com.crocodic.core.extension.toList
 import com.crocodic.core.extension.toObject
 import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.base.BaseViewModel
+import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -28,6 +33,24 @@ class EditProfileViewModel @Inject constructor(
     private val observer: BaseObserver
     ): BaseViewModel() {
 
+    private val _schools = MutableSharedFlow<List<Schools>>()
+    val schools = _schools.asSharedFlow()
+
+    fun getSchools() = viewModelScope.launch {
+        ApiObserver({ apiService.getSchools()},false, object : ApiObserver.ResponseListener{
+            override suspend fun onSuccess(response: JSONObject) {
+                val status = response.getInt(ApiCode.STATUS)
+//                if (status == ApiCode.SUCCESS){
+                    val data = response.getJSONArray(ApiCode.DATA).toList<Schools>(gson)
+                    _schools.emit(data)
+
+//                } else {
+//                    val message = response.getString(ApiCode.MESSAGE)
+//                }
+            }
+        })
+    }
+
     fun getProfile(
     ) = viewModelScope.launch {
         observer(
@@ -36,13 +59,12 @@ class EditProfileViewModel @Inject constructor(
             responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
-                    _apiResponse.emit(ApiResponse().responseSuccess())
                     session.saveUser(data)
                 }
 
                 override suspend fun onError(response: ApiResponse) {
                     super.onError(response)
-                    _apiResponse.emit(ApiResponse().responseError())
+
                 }
             })
     }

@@ -12,6 +12,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -26,6 +28,7 @@ import com.crocodic.core.extension.tos
 import com.crocodic.core.helper.DateTimeHelper
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
+import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.EditProfileActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,11 +55,18 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     private var filePhotoPicture: File? = null
     private var filePhotoBanner: File? = null
 
+    private val listSchools = ArrayList<Schools>()
+    private var schoolId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d("listSchools check", listSchools.toString())
+
         observe()
+        getSchools()
         getUser()
+        autocompleteSpinner()
 
         val user = session.getUser()
         if (user != null) {
@@ -69,28 +79,25 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
 
         binding.profilePictureEdit.setOnClickListener {
-            if (checkPermissionGallery()) {
+//            if (checkPermissionGallery()) {
             openGallery()
-            } else {
-                requestPermissionGallery()
-            }
+//            } else {
+//                requestPermissionGallery()
+//            }
         }
 
         binding.bannerEdit.setOnClickListener {
-            if (checkPermissionGallery()) {
-                openGallery()
-            } else {
-                requestPermissionGallery()
-            }
+//            if (checkPermissionGallery()) {
+                openGalleryBanner()
+//            } else {
+//                requestPermissionGallery()
+//            }
         }
 
         binding.saveButton.setOnClickListener {
-            validateForm()
+//            validateForm()
         }
 
-    }
-
-    private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -112,10 +119,59 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                 }
             }
         }
+
+    }
+
+    private fun observe() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.schools.collect {
+                        listSchools.addAll(it)
+                        Log.d("it check", it.toString())
+
+                        val autoCompleteSpinnerEdit = binding.editInputSchool
+                        val options = arrayListOf("Choose School") // Replace with your own options
+                        val adapter = ArrayAdapter(this@EditProfileActivity, android.R.layout.simple_dropdown_item_1line, listSchools)
+                        autoCompleteSpinnerEdit.setAdapter(adapter)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getSchools() {
+        viewModel.getSchools()
     }
 
     private fun getUser() {
         viewModel.getProfile()
+    }
+
+    private fun autocompleteSpinner(){
+
+        val autoCompleteSpinnerEdit = binding.editInputSchool
+        val options = arrayListOf("Choose School") // Replace with your own options
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listSchools)
+        autoCompleteSpinnerEdit.setAdapter(adapter)
+
+        Log.d("list school check", listSchools.toString())
+
+
+        // Show the dropdown list when the AutoCompleteTextView is clicked
+        autoCompleteSpinnerEdit.setOnClickListener {
+            autoCompleteSpinnerEdit.showDropDown()
+            autoCompleteSpinnerEdit.setDropDownVerticalOffset(-autoCompleteSpinnerEdit.height)
+
+       }
+
+        autoCompleteSpinnerEdit.setOnItemClickListener { parent, view, position, id ->
+            // Handle item selection here
+            val selectedItem = listSchools[position]
+            schoolId = selectedItem.id.toString()
+
+        }
+
     }
 
     private fun validateForm() {
