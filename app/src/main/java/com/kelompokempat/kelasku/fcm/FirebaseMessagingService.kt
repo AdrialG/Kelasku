@@ -17,14 +17,14 @@ import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService() {
 
-    private val session = Session(applicationContext, Gson())
+//    private val session = Session(applicationContext, Gson())
 
     override fun onNewToken(token : String) {
         super.onNewToken(token)
         Log.d("firebasetoken", token)
         sendRegistrationToServer(token)
 
-        session.setValue(Const.TOKEN.DEVICETOKEN, token)
+//        session.setValue(Const.TOKEN.DEVICETOKEN, token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

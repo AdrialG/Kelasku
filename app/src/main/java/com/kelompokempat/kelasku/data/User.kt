@@ -29,6 +29,22 @@ data class User(
     @SerializedName("total_likes")
     val totalLikes: Int?,
     @Expose
-    @SerializedName("school_name")
-    val schoolName: String?
-) : Parcelable
+    @SerializedName("school")
+    val school: Schools?
+) : Parcelable {
+
+    @Parcelize
+    data class Schools(
+        @Expose
+        @SerializedName("id")
+        val id: Int?,
+        @Expose
+        @SerializedName("school_name")
+        val school_name: String
+    ) : Parcelable {
+        override fun toString(): String {
+            return school_name
+        }
+    }
+
+}
