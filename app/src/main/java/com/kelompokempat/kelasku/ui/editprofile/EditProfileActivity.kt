@@ -161,7 +161,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         // Show the dropdown list when the AutoCompleteTextView is clicked
         autoCompleteSpinnerEdit.setOnClickListener {
             autoCompleteSpinnerEdit.showDropDown()
-            autoCompleteSpinnerEdit.setDropDownVerticalOffset(-autoCompleteSpinnerEdit.height)
+            autoCompleteSpinnerEdit.dropDownVerticalOffset = -autoCompleteSpinnerEdit.height
 
        }
 

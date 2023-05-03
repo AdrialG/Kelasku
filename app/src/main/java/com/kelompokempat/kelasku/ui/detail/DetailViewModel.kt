@@ -52,4 +52,20 @@ class DetailViewModel @Inject constructor(
             })
     }
 
+    fun colek(id: String?) = viewModelScope.launch {
+        observer(
+            block = { apiService.colek(id) },
+            toast = false,
+            responseListener = object : ApiObserver.ResponseListener{
+                override suspend fun onSuccess(response: JSONObject) {
+                    _apiResponse.emit(ApiResponse().responseSuccess())
+                }
+
+                override suspend fun onError(response: ApiResponse) {
+                    super.onError(response)
+                    _apiResponse.emit(ApiResponse().responseError())
+                }
+            })
+    }
+
 }

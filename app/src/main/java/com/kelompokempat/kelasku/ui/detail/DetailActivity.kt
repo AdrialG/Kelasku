@@ -27,11 +27,14 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
         super.onCreate(savedInstanceState)
 
         observe()
-//        getFriendsDetail()
         getFriendsData()
 
         binding.detailBack.setOnClickListener {
             finish()
+        }
+
+        binding.buttonAlert.setOnClickListener {
+            colek()
         }
 
     }
@@ -39,21 +42,6 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                launch {
-//                    viewModel.apiResponse.collect {
-//                        when (it.status) {
-//                            ApiStatus.SUCCESS -> {
-//                                val friends = viewModel.friends
-//                                binding.data = friends
-//
-//
-//                            }
-//                            else -> {
-//
-//                            }
-//                        }
-//                    }
-//                }
 
                 launch {
                     viewModel.friends.collect{ friends ->
@@ -70,8 +58,10 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
         Log.d("friend id", id.toString())
     }
 
-//    private fun getFriendsDetail() {
-//        viewModel.getFriendsDetail(friendsList?.id)
-//    }
+    private fun colek() {
+        val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
+        viewModel.colek(id)
+        Log.d("notified", id.toString())
+    }
 
 }

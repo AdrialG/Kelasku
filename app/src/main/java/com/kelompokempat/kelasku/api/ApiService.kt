@@ -86,7 +86,6 @@ interface ApiService {
         @Path("id") id : String?
     ): String
 
-    @FormUrlEncoded
     @POST("colek/{id}")
     suspend fun colek(
         @Path("id") id : String?
