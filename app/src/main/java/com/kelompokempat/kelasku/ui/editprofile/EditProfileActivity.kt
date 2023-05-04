@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,8 +60,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d("listSchools check", listSchools.toString())
-
         observe()
         getSchools()
         getUser()
@@ -95,7 +92,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
 
         binding.saveButton.setOnClickListener {
-//            validateForm()
+            validateForm()
         }
 
         lifecycleScope.launch {
@@ -128,10 +125,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                 launch {
                     viewModel.schools.collect {
                         listSchools.addAll(it)
-                        Log.d("it check", it.toString())
 
                         val autoCompleteSpinnerEdit = binding.editInputSchool
-                        val options = arrayListOf("Choose School") // Replace with your own options
                         val adapter = ArrayAdapter(this@EditProfileActivity, android.R.layout.simple_dropdown_item_1line, listSchools)
                         autoCompleteSpinnerEdit.setAdapter(adapter)
                     }
@@ -151,12 +146,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     private fun autocompleteSpinner(){
 
         val autoCompleteSpinnerEdit = binding.editInputSchool
-        val options = arrayListOf("Choose School") // Replace with your own options
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listSchools)
         autoCompleteSpinnerEdit.setAdapter(adapter)
-
-        Log.d("list school check", listSchools.toString())
-
 
         // Show the dropdown list when the AutoCompleteTextView is clicked
         autoCompleteSpinnerEdit.setOnClickListener {
@@ -165,7 +156,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
        }
 
-        autoCompleteSpinnerEdit.setOnItemClickListener { parent, view, position, id ->
+        autoCompleteSpinnerEdit.setOnItemClickListener { _, _, position, _ ->
             // Handle item selection here
             val selectedItem = listSchools[position]
             schoolId = selectedItem.id.toString()

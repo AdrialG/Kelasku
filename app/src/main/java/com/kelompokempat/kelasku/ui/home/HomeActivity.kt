@@ -3,18 +3,16 @@ package com.kelompokempat.kelasku.ui.home
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
-import android.content.DialogInterface
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -40,7 +38,6 @@ import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
-import com.kelompokempat.kelasku.ui.splash.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.launch
@@ -55,8 +52,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     @Inject
     lateinit var session : Session
 
-    private val friendsList : FriendsList? = null
-
     private var friends = ArrayList<FriendsList?>()
     private var friendsSpecific = ArrayList<FriendsList?>()
 
@@ -64,6 +59,22 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+            override fun handleOnBackPressed() {
+                // Show dialog or handle back press here
+                val builder = AlertDialog.Builder(this@HomeActivity)
+                builder.setMessage("Are you sure you want to exit?")
+                builder.setPositiveButton("Yes") { _, _ ->
+                    finish()
+                }
+                builder.setNegativeButton("No", null)
+                val dialog = builder.create()
+                dialog.show()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
 
         askNotificationPermission()
         observe()
@@ -108,24 +119,17 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                     alert.setTitle("Logout")
                     alert.setMessage("Do you wish to logout?")
                         .setCancelable(false)
-                        .setPositiveButton("Yes",
-                            DialogInterface.OnClickListener { dialogInterface, i ->
-                                viewModel.logout()
-                                openActivity<LoginActivity> {
-                                    finishAffinity()
-                                }
-                            })
-                        .setNegativeButton("No",
-                            DialogInterface.OnClickListener { dialogInterface, i ->
-                                dialogInterface.dismiss()
-                            })
+                        .setPositiveButton("Yes") { _, _ ->
+                            viewModel.logout()
+                            openActivity<LoginActivity> {
+                                finishAffinity()
+                            }
+                        }
+                        .setNegativeButton("No") { dialogInterface, _ ->
+                            dialogInterface.dismiss()
+                        }
 
                     alert.show()
-
-//                    viewModel.logout()
-//                    openActivity<LoginActivity> {
-//                        finishAffinity()
-//                    }
 
                     return@setNavigationItemSelectedListener true
                 }
@@ -153,13 +157,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                         }
                     }
 
-                    binding.homeRecycler.adapter?.notifyDataSetChanged()
+                    binding.homeRecycler.adapter?.notifyItemChanged(0)
                 }
 
                 else {
                     friends.clear()
                     friends.addAll(friendsSpecific)
-                    binding.homeRecycler.adapter?.notifyDataSetChanged()
+                    binding.homeRecycler.adapter?.notifyItemChanged(0)
                 }
 
                 Timber.d("Keyword", "$newText")
@@ -168,10 +172,9 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         })
 
         binding.homeRecycler.adapter = CoreListAdapter<ItemHomeRecyclerBinding, FriendsList>(R.layout.item_home_recycler)
-            .initItem(friends) { position, data ->
+            .initItem(friends) { _, data ->
                 openActivity<DetailActivity> {
                     putExtra(Const.FRIENDS.FRIENDS_ID, data?.id)
-                    Log.d("home friend id", data?.id.toString())
                 }
             }
 
@@ -209,7 +212,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
                         friendsSpecific.addAll(it)
                         friends.addAll(it)
-                        binding.homeRecycler.adapter?.notifyDataSetChanged()
+                        binding.homeRecycler.adapter?.notifyItemChanged(0)
                     }
                 }
             }
@@ -226,8 +229,8 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         val navEmail = navigationView.findViewById<TextView>(R.id.navigation_email)
 
         val user = session.getUser()
-        navName.setText(user?.name)
-        navEmail.setText(user?.email)
+        navName.text = user?.name
+        navEmail.text = user?.email
 
         Glide
             .with(navPhoto.context)

@@ -1,8 +1,9 @@
 package com.kelompokempat.kelasku.ui.login
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -10,7 +11,6 @@ import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
-import com.crocodic.core.extension.tos
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kelompokempat.kelasku.R
@@ -22,6 +22,7 @@ import com.kelompokempat.kelasku.ui.home.HomeActivity
 import com.kelompokempat.kelasku.ui.register.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,8 +34,21 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val isUser = session.getUser()
-        Log.d("isUser", isUser.toString())
+        val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+            override fun handleOnBackPressed() {
+                // Show dialog or handle back press here
+                val builder = AlertDialog.Builder(this@LoginActivity)
+                builder.setMessage("Are you sure you want to exit?")
+                builder.setPositiveButton("Yes") { _, _ ->
+                    finish()
+                }
+                builder.setNegativeButton("No", null)
+                val dialog = builder.create()
+                dialog.show()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
 
         binding.loginButton.setOnClickListener {
             val emailOrPhone = binding.loginInputEmailPn.textOf()
@@ -44,7 +58,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                Timber.w(task.exception, "Fetching FCM registration token failed")
                 return@OnCompleteListener
             }
 
@@ -53,9 +67,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
 
             // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
-            Log.d(ContentValues.TAG, msg)
+            Timber.tag(ContentValues.TAG).d(msg)
             session.setValue(Const.TOKEN.DEVICETOKEN, token)
-//            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
         })
 
         lifecycleScope.launch {

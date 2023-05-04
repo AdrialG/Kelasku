@@ -15,9 +15,10 @@ import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.databinding.ActivityRegisterBinding
-import com.kelompokempat.kelasku.ui.home.HomeActivity
+import com.kelompokempat.kelasku.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>(R.layout.activity_register) {
@@ -29,14 +30,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onCreate(savedInstanceState)
 
         binding.registerButton.setOnClickListener {
-            if (binding.registerInputName.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputEmail.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputPhone.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputSchool.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputPassword.isEmptyRequired(R.string.fill_please) ||
-                binding.registerInputConfirmPassword.isEmptyRequired(R.string.fill_please)){
-                return@setOnClickListener
-            }
 
             if (listOf(
                     binding.registerInputName,
@@ -54,6 +47,18 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             val schools = schoolId
             val password = binding.registerInputPassword.textOf()
             val confirmPassword = binding.registerInputPassword.textOf()
+
+            if (isValidEmail(email)) {
+
+            } else {
+                binding.root.snacked("Please input a valid Gmail address")
+                return@setOnClickListener
+            }
+
+            if (password.length < 8) {
+                binding.root.snacked("Password can't be less than 8 characters")
+                return@setOnClickListener
+            }
 
             viewModel.register( name, email, phone, password, confirmPassword, schools)
 
@@ -75,7 +80,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                             ApiStatus.LOADING -> loadingDialog.show("Signing In…")
                             ApiStatus.SUCCESS -> {
                                 loadingDialog.dismiss()
-                                openActivity<HomeActivity>()
+                                openActivity<LoginActivity>()
                                 finish()
                             }
                             ApiStatus.ERROR -> {
@@ -98,25 +103,30 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     private fun autocompleteSpinner(){
 
         val autoCompleteSpinner = findViewById<AutoCompleteTextView>(R.id.register_input_school)
-        val options = arrayListOf("Choose School") // Replace with your own options
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listSchools)
         autoCompleteSpinner.setAdapter(adapter)
-
 
         // Show the dropdown list when the AutoCompleteTextView is clicked
         autoCompleteSpinner.setOnClickListener {
             autoCompleteSpinner.showDropDown()
-            autoCompleteSpinner.setDropDownVerticalOffset(-autoCompleteSpinner.height)
+            autoCompleteSpinner.dropDownVerticalOffset = -autoCompleteSpinner.height
 
         }
 
-        autoCompleteSpinner.setOnItemClickListener { parent, view, position, id ->
+        autoCompleteSpinner.setOnItemClickListener { _, _, position, _ ->
             // Handle item selection here
             val selectedItem = listSchools[position]
             schoolId = selectedItem.id.toString()
 
         }
 
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@gmail\\.com$"
+        val pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(email)
+        return matcher.matches()
     }
 
     private fun observe() {
@@ -126,9 +136,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                     viewModel.schools.collect {
                         listSchools.addAll(it)
                     }
-
                 }
-
             }
         }
     }
