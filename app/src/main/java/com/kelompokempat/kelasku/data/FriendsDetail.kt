@@ -31,6 +31,9 @@ data class FriendsDetail(
     @SerializedName("like_by_you")
     val likeByYou: Boolean,
     @Expose
+    @SerializedName("redirect_to_whatsapp")
+    val redirectToWhatsapp: String?,
+    @Expose
     @SerializedName("created_at")
     val createdAt: Boolean,
     @Expose
