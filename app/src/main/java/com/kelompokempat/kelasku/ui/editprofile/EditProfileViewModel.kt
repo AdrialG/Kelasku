@@ -1,6 +1,5 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
@@ -39,14 +38,8 @@ class EditProfileViewModel @Inject constructor(
     fun getSchools() = viewModelScope.launch {
         ApiObserver({ apiService.getSchools()},false, object : ApiObserver.ResponseListener{
             override suspend fun onSuccess(response: JSONObject) {
-                val status = response.getInt(ApiCode.STATUS)
-//                if (status == ApiCode.SUCCESS){
-                    val data = response.getJSONArray(ApiCode.DATA).toList<Schools>(gson)
-                    _schools.emit(data)
-
-//                } else {
-//                    val message = response.getString(ApiCode.MESSAGE)
-//                }
+                val data = response.getJSONArray(ApiCode.DATA).toList<Schools>(gson)
+                _schools.emit(data)
             }
         })
     }
@@ -84,7 +77,6 @@ class EditProfileViewModel @Inject constructor(
                     super.onError(response)
                     _apiResponse.emit(ApiResponse().responseError())
                 }
-
             })
     }
 
@@ -104,7 +96,6 @@ class EditProfileViewModel @Inject constructor(
                         super.onError(response)
                         _apiResponse.emit(ApiResponse().responseError())
                     }
-
                 })
         }
 
@@ -124,7 +115,6 @@ class EditProfileViewModel @Inject constructor(
                         super.onError(response)
                         _apiResponse.emit(ApiResponse().responseError())
                     }
-
                 })
         }
 
@@ -146,9 +136,7 @@ class EditProfileViewModel @Inject constructor(
                         super.onError(response)
                         _apiResponse.emit(ApiResponse().responseError())
                     }
-
                 })
         }
-
 
 }

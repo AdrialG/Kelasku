@@ -1,12 +1,9 @@
 package com.kelompokempat.kelasku.ui.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiObserver
 import com.crocodic.core.api.ApiResponse
-import com.crocodic.core.api.ApiStatus
 import com.google.gson.Gson
-import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.Const
@@ -16,19 +13,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val apiService: ApiService,
-    private val gson: Gson,
     private val session: Session
     ) : BaseViewModel() {
 
     private val _loginResponse = MutableSharedFlow<LoginResponse>()
-    val loginResponse = _loginResponse.asSharedFlow()
 
     fun login(emailOrPhone: String, password: String ) = viewModelScope.launch {
         ApiObserver.run(
@@ -42,16 +35,12 @@ class LoginViewModel @Inject constructor(
                 }
 
                 override suspend fun onSuccess(response: LoginResponse) {
-                    val user = response.user
-                    Log.d("You're Logged In As :", "$user")
                     response.token?.let { session.setValue(Const.TOKEN.API_TOKEN, it) }
                     _loginResponse.emit(response)
                     _apiResponse.emit(ApiResponse().responseSuccess("Logged In"))
                 }
-
             }
         )
-
     }
 
 }

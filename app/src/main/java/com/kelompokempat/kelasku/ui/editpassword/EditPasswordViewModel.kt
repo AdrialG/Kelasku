@@ -65,7 +65,6 @@ class EditPasswordViewModel @Inject constructor(
                         super.onError(response)
                         _apiResponse.emit(ApiResponse().responseError())
                     }
-
                 })
         }
 

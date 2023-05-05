@@ -1,25 +1,19 @@
 package com.kelompokempat.kelasku.fcm
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.Gson
 import com.kelompokempat.kelasku.R
-import com.kelompokempat.kelasku.data.Const
-import com.kelompokempat.kelasku.data.Session
 import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token : String) {
         super.onNewToken(token)
-        Log.d("firebasetoken", token)
         sendRegistrationToServer(token)
 
     }
@@ -42,9 +36,10 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
 private fun sendRegistrationToServer(token: String?) {
     // TODO: Implement this method to send token to your app server.
-    Log.d(TAG, "sendRegistrationTokenToServer($token)")
+    Timber.d("sendRegistrationTokenToServer($token)")
 }
 
+@SuppressLint("ObsoleteSdkInt")
 fun showNotification(context: Context, notificationId: Int, user_id: String, title: String, message: String) {
     // Notification Manager
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

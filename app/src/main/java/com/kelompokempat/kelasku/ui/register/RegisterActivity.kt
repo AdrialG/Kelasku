@@ -1,21 +1,17 @@
 package com.kelompokempat.kelasku.ui.register
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.telephony.TelephonyManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
-import com.crocodic.core.extension.*
+import com.crocodic.core.extension.isEmptyRequired
+import com.crocodic.core.extension.openActivity
+import com.crocodic.core.extension.snacked
+import com.crocodic.core.extension.textOf
+import com.crocodic.core.helper.log.Log
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
@@ -54,7 +50,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             val confirmPassword = binding.registerInputPassword.textOf()
 
             if (isValidEmail(email)) {
-
+                Log.d("Email Validation Success")
             } else {
                 binding.root.snacked("Please input a valid Gmail address")
                 return@setOnClickListener

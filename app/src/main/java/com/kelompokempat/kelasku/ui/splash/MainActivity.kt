@@ -3,7 +3,6 @@ package com.kelompokempat.kelasku.ui.splash
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.crocodic.core.base.activity.NoViewModelActivity
 import com.crocodic.core.extension.openActivity
 import com.kelompokempat.kelasku.R
@@ -23,18 +22,13 @@ class MainActivity : NoViewModelActivity<ActivityMainBinding>(R.layout.activity_
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-//        openActivity<LoginActivity>()
-
         //Handler Looper Splash
         Handler(Looper.getMainLooper()).postDelayed({
             val isUser = session.getUser()
             if (isUser == null){
-                Log.d("isUser", isUser.toString())
                 openActivity<LoginActivity>()
                 finish()
             }else{
-                Log.d("isUser", isUser.toString())
                 openActivity<HomeActivity>()
                 finish()
 

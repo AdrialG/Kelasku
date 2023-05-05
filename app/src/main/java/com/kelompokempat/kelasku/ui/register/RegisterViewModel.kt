@@ -54,10 +54,8 @@ class RegisterViewModel @Inject constructor(
                     _registerResponse.emit(response)
                     _apiResponse.emit(ApiResponse().responseSuccess("Signed In"))
                 }
-
             }
         )
-
     }
 
 }

@@ -25,7 +25,5 @@ class Session(context: Context, private val gson: Gson) : CoreSession(context) {
 
     companion object {
         const val PREF_USER = "user"
-        const val LAST_DATE_SEEK = "last_date_seek"
-        const val LAST_DATE_SYNC_TASK = "last_date_sync_task"
     }
 }

@@ -1,6 +1,5 @@
 package com.kelompokempat.kelasku.ui.home
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
@@ -11,7 +10,9 @@ import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.base.BaseViewModel
-import com.kelompokempat.kelasku.data.*
+import com.kelompokempat.kelasku.data.FriendsList
+import com.kelompokempat.kelasku.data.Session
+import com.kelompokempat.kelasku.data.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -55,7 +56,6 @@ class HomeViewModel @Inject constructor(
             responseListener = object : ApiObserver.ResponseListener{
                 override suspend fun onSuccess(response: JSONObject) {
                     val data = response.getJSONArray(ApiCode.DATA).toList<FriendsList>(gson)
-                    Log.d("friends data", data.toString())
                     _apiResponse.emit(ApiResponse().responseSuccess())
                     _friends.emit(data)
                 }

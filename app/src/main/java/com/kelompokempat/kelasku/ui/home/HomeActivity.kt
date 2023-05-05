@@ -157,13 +157,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                         }
                     }
 
-                    binding.homeRecycler.adapter?.notifyItemChanged(0)
+                    binding.homeRecycler.adapter?.notifyDataSetChanged()
                 }
 
                 else {
                     friends.clear()
                     friends.addAll(friendsSpecific)
-                    binding.homeRecycler.adapter?.notifyItemChanged(0)
+                    binding.homeRecycler.adapter?.notifyDataSetChanged()
                 }
 
                 Timber.d("Keyword", "$newText")
@@ -212,7 +212,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
 
                         friendsSpecific.addAll(it)
                         friends.addAll(it)
-                        binding.homeRecycler.adapter?.notifyItemChanged(0)
+                        binding.homeRecycler.adapter?.notifyDataSetChanged()
                     }
                 }
             }
