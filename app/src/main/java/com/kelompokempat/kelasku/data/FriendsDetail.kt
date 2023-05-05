@@ -23,7 +23,7 @@ data class FriendsDetail(
     val bannerPhoto: String?,
     @Expose
     @SerializedName("phone")
-    val phone: String?,
+    var phone: String?,
     @Expose
     @SerializedName("total_likes")
     val totalLikes: Int?,

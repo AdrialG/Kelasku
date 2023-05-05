@@ -3,17 +3,12 @@ package com.kelompokempat.kelasku.ui.detail
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.crocodic.core.api.ApiStatus
-import com.crocodic.core.extension.snacked
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Const
-import com.kelompokempat.kelasku.data.FriendsDetail
-import com.kelompokempat.kelasku.data.FriendsList
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,8 +21,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 
     @Inject
     lateinit var session : Session
-
-    private val friendsDetail : FriendsDetail? = null
+    private var phoneNumber: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +38,8 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
         }
 
         binding.buttonWhatsapp.setOnClickListener {
-            whatsApp(friendsDetail?.phone)
+            whatsApp(phoneNumber)
         }
-
-        friendsDetail?.phone?.let { Log.d("friend id", it) }
 
     }
 
@@ -57,6 +49,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                 launch {
                     viewModel.friends.collect{ friends ->
                         binding.data = friends
+                        phoneNumber = friends.phone
                     }
                 }
             }
@@ -67,7 +60,6 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
         val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
         viewModel.getFriendsDetail(id)
 
-        Log.d("friend id", id.toString())
     }
 
     private fun colek() {
@@ -77,10 +69,10 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     }
 
     private fun whatsApp(number: String?) {
-        val intentUri = Uri.parse("https://api.whatsapp.com/send?phone="+number)
-        val whatsappIntent = Intent(Intent.ACTION_VIEW)
-        whatsappIntent.setData(intentUri)
-        startActivity(whatsappIntent)
+        val phoneNumber = "+62 + $number"
+        val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber")
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
 }

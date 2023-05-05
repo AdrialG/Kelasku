@@ -34,7 +34,8 @@
                     android:layout_marginStart="@dimen/_16sdp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/back" />
 
                 <TextView
                     android:id="@+id/text_top"
@@ -69,7 +70,8 @@
             android:layout_height="180dp"
             imageBannerUrl='@{data.bannerPhoto}'
             android:scaleType="fitXY"
-            app:layout_constraintTop_toBottomOf="@id/top_card"/>
+            app:layout_constraintTop_toBottomOf="@id/top_card"
+            android:contentDescription="@string/banner" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile_picture_case"
@@ -135,7 +137,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/alert"
+                    android:text="@string/colek"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="20sp"
                     android:textColor="@color/black" />
@@ -185,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Text"
+                    android:text="@string/text"
                     android:fontFamily="@font/inter_bold"
                     android:textSize="20sp"
                     android:textColor="@color/black"/>
@@ -217,7 +219,8 @@
                     android:layout_marginStart="20dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/name" />
 
                 <TextView
                     android:id="@+id/profile_name"
@@ -271,7 +274,8 @@
                     android:layout_marginStart="20dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/school" />
 
                 <TextView
                     android:id="@+id/profile_school"
@@ -325,7 +329,8 @@
                     android:layout_marginStart="20dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/phone_number" />
 
                 <TextView
                     android:id="@+id/profile_number"

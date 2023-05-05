@@ -33,4 +33,8 @@
     <string name="new_password">New Password</string>
     <string name="people_like_you">People Like You</string>
     <string name="alert">Alert</string>
+    <string name="colek">Colek</string>
+    <string name="text">Text</string>
+    <string name="back">Back</string>
+    <string name="banner">Banner</string>
 </resources>

@@ -9,7 +9,6 @@ import com.google.gson.Gson
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseViewModel
 import com.kelompokempat.kelasku.data.Schools
-import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.data.response.RegisterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +26,6 @@ class RegisterViewModel @Inject constructor(
     private val _schools = MutableSharedFlow<List<Schools>>()
     val schools = _schools.asSharedFlow()
     private val _registerResponse = MutableSharedFlow<RegisterResponse>()
-    val registerResponse = _registerResponse.asSharedFlow()
 
     fun getSchools() = viewModelScope.launch {
         ApiObserver({ apiService.getSchools()},false, object : ApiObserver.ResponseListener{
@@ -36,9 +34,6 @@ class RegisterViewModel @Inject constructor(
                 if (status == ApiCode.SUCCESS){
                     val data = response.getJSONArray(ApiCode.DATA).toList<Schools>(gson)
                     _schools.emit(data)
-
-                } else {
-                    val message = response.getString(ApiCode.MESSAGE)
                 }
             }
         })
@@ -56,7 +51,6 @@ class RegisterViewModel @Inject constructor(
                 }
 
                 override suspend fun onSuccess(response: RegisterResponse) {
-                    val user = response.user
                     _registerResponse.emit(response)
                     _apiResponse.emit(ApiResponse().responseSuccess("Signed In"))
                 }
