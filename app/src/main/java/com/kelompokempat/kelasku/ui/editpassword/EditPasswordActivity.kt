@@ -1,13 +1,20 @@
 package com.kelompokempat.kelasku.ui.editpassword
 
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.crocodic.core.api.ApiStatus
+import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.EditPasswordActivityBinding
+import com.kelompokempat.kelasku.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -58,6 +65,27 @@ class EditPasswordActivity : BaseActivity<EditPasswordActivityBinding, EditPassw
 
             viewModel.updatePassword(oldPassword, newPassword, passwordConfirmation)
 
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.apiResponse.collect {
+                        when (it.status) {
+                            ApiStatus.LOADING -> loadingDialog.show("Updating Password")
+                            ApiStatus.SUCCESS -> {
+                                loadingDialog.dismiss()
+                                binding.root.snacked("Update Success")
+                            }
+                            ApiStatus.ERROR -> {
+                                loadingDialog.dismiss()
+                                binding.root.snacked("Failed to update password")
+                            }
+                            else -> loadingDialog.setResponse(it.message ?: return@collect)
+                        }
+                    }
+                }
+            }
         }
 
     }

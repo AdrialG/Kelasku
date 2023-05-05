@@ -17,14 +17,11 @@ import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService() {
 
-//    private val session = Session(applicationContext, Gson())
-
     override fun onNewToken(token : String) {
         super.onNewToken(token)
         Log.d("firebasetoken", token)
         sendRegistrationToServer(token)
 
-//        session.setValue(Const.TOKEN.DEVICETOKEN, token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -39,7 +36,6 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         val notificationId = System.currentTimeMillis().toInt()
         showNotification(context, notificationId, message.data["user_id"].toString(), message.data["title"].toString(), message.data["message"].toString())
 
-//        showNotification(context, message.data["user_id"].toString(), message.data["title"].toString(), message.data["message"].toString())
     }
 
 }
@@ -51,15 +47,14 @@ private fun sendRegistrationToServer(token: String?) {
 
 fun showNotification(context: Context, notificationId: Int, user_id: String, title: String, message: String) {
     // Notification Manager
-    val notificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     // Notification for Oreo >
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
         val channel = NotificationChannel(
             "CHANNEL_ID",
             "My Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_HIGH
         )
         channel.description = "Mhm"
         channel.enableLights(true)
@@ -73,7 +68,7 @@ fun showNotification(context: Context, notificationId: Int, user_id: String, tit
         .setContentInfo(user_id)
         .setContentTitle(title)
         .setContentText(message)
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
 
     // Show Notification
     notificationManager.notify(notificationId, builder.build())

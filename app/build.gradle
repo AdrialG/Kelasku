@@ -77,7 +77,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
-    implementation "androidx.fragment:fragment-ktx:1.5.6"
+    implementation "androidx.fragment:fragment-ktx:1.5.7"
     implementation 'androidx.activity:activity-ktx:1.7.1'
 
     testImplementation 'junit:junit:4.13.2'
@@ -89,5 +89,7 @@ dependencies {
     implementation"androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
+//    implementation 'com.hbb20:ccp:X.Y.Z'
 
 }

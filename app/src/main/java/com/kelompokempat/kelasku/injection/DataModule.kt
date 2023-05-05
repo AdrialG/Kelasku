@@ -23,18 +23,22 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
+    @Singleton
     @Provides
     fun provideGson(): Gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create()
 
+    @Singleton
     @Provides
     fun provideSession(@ApplicationContext context: Context, gson: Gson) = Session(context, gson)
 
+    @Singleton
     @Provides
     fun provideOkHttpClient(session : Session): OkHttpClient{
 
@@ -71,6 +75,7 @@ class DataModule {
         return okHttpClient.build()
     }
 
+    @Singleton
     @Provides
     fun provideApiService(okHttpClient: OkHttpClient): ApiService {
         return Retrofit.Builder()
@@ -81,6 +86,7 @@ class DataModule {
             .build().create(ApiService::class.java)
     }
 
+    @Singleton
     @Provides
     fun provideBaseObserver(apiService: ApiService,session: Session): BaseObserver = BaseObserver(apiService,session)
 
