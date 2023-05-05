@@ -2,12 +2,10 @@ package com.kelompokempat.kelasku.injection
 
 import android.content.Context
 import androidx.databinding.ktx.BuildConfig
-import com.crocodic.core.data.CoreSession
 import com.crocodic.core.helper.okhttp.SSLTrust
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.base.BaseObserver
 import com.kelompokempat.kelasku.data.Const

@@ -1,6 +1,5 @@
 package com.kelompokempat.kelasku.ui.editpassword
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.crocodic.core.api.ApiCode
 import com.crocodic.core.api.ApiObserver
