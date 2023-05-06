@@ -19,7 +19,6 @@ import com.kelompokempat.kelasku.databinding.ActivityRegisterBinding
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>(R.layout.activity_register) {
@@ -49,10 +48,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             val password = binding.registerInputPassword.textOf()
             val confirmPassword = binding.registerInputPassword.textOf()
 
-            if (isValidEmail(email)) {
+            val isValid = isValidEmail(email)
+            if (isValid) {
                 Log.d("Email Validation Success")
             } else {
-                binding.root.snacked("Please input a valid Gmail address")
+                binding.root.snacked("Please input a valid Email address")
                 return@setOnClickListener
             }
 
@@ -111,23 +111,19 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         autoCompleteSpinner.setOnClickListener {
             autoCompleteSpinner.showDropDown()
             autoCompleteSpinner.dropDownVerticalOffset = -autoCompleteSpinner.height
-
         }
 
         autoCompleteSpinner.setOnItemClickListener { _, _, position, _ ->
             // Handle item selection here
             val selectedItem = listSchools[position]
             schoolId = selectedItem.id.toString()
-
         }
 
     }
 
     private fun isValidEmail(email: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@"
-        val pattern = Pattern.compile(emailRegex, Pattern.CASE_INSENSITIVE)
-        val matcher = pattern.matcher(email)
-        return matcher.matches()
+        val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        return email.matches(emailPattern.toRegex())
     }
 
     private fun observe() {
