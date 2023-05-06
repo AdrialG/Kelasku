@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/main_blue">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/email_must_follow_the_format_of_the_common_email_addresses"
+            android:textColor="@color/white"
+            android:fontFamily="@font/inter_bold"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:padding="16dp"/>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

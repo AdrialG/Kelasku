@@ -1,8 +1,13 @@
 package com.kelompokempat.kelasku.ui.register
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -20,6 +25,7 @@ import com.kelompokempat.kelasku.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@SuppressLint("InflateParams")
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>(R.layout.activity_register) {
 
@@ -28,6 +34,18 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding.registerInputEmail.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                popupEmail()
+            }
+        }
+
+        binding.registerInputPassword.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                popupPassword()
+            }
+        }
 
         binding.registerButton.setOnClickListener {
 
@@ -124,6 +142,20 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     private fun isValidEmail(email: String): Boolean {
         val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
         return email.matches(emailPattern.toRegex())
+    }
+
+    private fun popupEmail() {
+        val popupView = LayoutInflater.from(this).inflate(R.layout.popout_email, null)
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.elevation = 10f
+        popupWindow.showAtLocation(binding.registerInputPassword, Gravity.TOP, 0, 0)
+    }
+
+    private fun popupPassword() {
+        val popupView = LayoutInflater.from(this).inflate(R.layout.popout_password, null)
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.elevation = 10f
+        popupWindow.showAtLocation(binding.registerInputPassword, Gravity.TOP, 0, 0)
     }
 
     private fun observe() {

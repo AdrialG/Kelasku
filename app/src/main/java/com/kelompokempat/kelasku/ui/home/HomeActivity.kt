@@ -1,6 +1,7 @@
 package com.kelompokempat.kelasku.ui.home
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
@@ -45,7 +46,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-
+@SuppressLint("NotifyDataSetChanged")
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.activity_home) {
 

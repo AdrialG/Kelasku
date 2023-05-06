@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.crocodic.core.extension.snacked
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Const
@@ -22,6 +23,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     @Inject
     lateinit var session : Session
     private var phoneNumber: String? = null
+    private var name: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                     viewModel.friends.collect{ friends ->
                         binding.data = friends
                         phoneNumber = friends.phone
+                        name = friends.name
                     }
                 }
             }
@@ -65,6 +68,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     private fun colek() {
         val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
         viewModel.colek(id)
+        binding.root.snacked("$name Colek'd")
         Timber.tag("notified").d(id.toString())
     }
 
