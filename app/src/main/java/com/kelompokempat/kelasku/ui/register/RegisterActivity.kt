@@ -28,11 +28,12 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     private val listSchools = ArrayList<Schools>()
     private var schoolId: String? = null
-    
-    private val fullNumber = binding.ccp.registerCarrierNumberEditText(binding.registerInputPhone)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val fullNumber = binding.ccp.registerCarrierNumberEditText(binding.registerInputPhone)
+
 
         binding.textKelasku.setOnClickListener {
             tos("$fullNumber")
