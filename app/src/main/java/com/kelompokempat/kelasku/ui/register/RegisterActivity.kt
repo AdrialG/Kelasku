@@ -12,10 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
-import com.crocodic.core.extension.isEmptyRequired
-import com.crocodic.core.extension.openActivity
-import com.crocodic.core.extension.snacked
-import com.crocodic.core.extension.textOf
+import com.crocodic.core.extension.*
 import com.crocodic.core.helper.log.Log
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
@@ -31,9 +28,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     private val listSchools = ArrayList<Schools>()
     private var schoolId: String? = null
+    
+    private val fullNumber = binding.ccp.registerCarrierNumberEditText(binding.registerInputPhone)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding.textKelasku.setOnClickListener {
+            tos("$fullNumber")
+        }
 
         binding.registerInputEmail.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
