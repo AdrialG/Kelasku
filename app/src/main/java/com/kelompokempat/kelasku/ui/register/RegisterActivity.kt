@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.LinearLayout
-import android.widget.PopupWindow
+import android.widget.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.*
-import com.crocodic.core.helper.log.Log
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
@@ -32,11 +28,12 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fullNumber = binding.ccp.registerCarrierNumberEditText(binding.registerInputPhone)
+        binding.ccp.registerCarrierNumberEditText(binding.registerInputPhone)
 
-
-        binding.textKelasku.setOnClickListener {
-            tos("$fullNumber")
+        binding.registerInputName.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                popupName()
+            }
         }
 
         binding.registerInputEmail.setOnFocusChangeListener { _, hasFocus ->
@@ -65,15 +62,18 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
             val name = binding.registerInputName.textOf()
             val email = binding.registerInputEmail.textOf()
-            val phone = binding.registerInputPhone.textOf()
+            val phone = binding.ccp.fullNumber
             val schools = schoolId
             val password = binding.registerInputPassword.textOf()
             val confirmPassword = binding.registerInputPassword.textOf()
 
+            if (name.length < 5) {
+                binding.root.snacked("Name can't be less than 5 characters")
+                return@setOnClickListener
+            }
+
             val isValid = isValidEmail(email)
-            if (isValid) {
-                Log.d("Email Validation Success")
-            } else {
+            if (!isValid) {
                 binding.root.snacked("Please input a valid Email address")
                 return@setOnClickListener
             }
@@ -94,28 +94,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         observe()
         getSchools()
         autocompleteSpinner()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.apiResponse.collect {
-                        when (it.status) {
-                            ApiStatus.LOADING -> loadingDialog.show("Signing In…")
-                            ApiStatus.SUCCESS -> {
-                                loadingDialog.dismiss()
-                                openActivity<LoginActivity>()
-                                finish()
-                            }
-                            ApiStatus.ERROR -> {
-                                loadingDialog.dismiss()
-                                binding.root.snacked("Register Failed")
-                            }
-                            else -> loadingDialog.setResponse(it.message ?: return@collect)
-                        }
-                    }
-                }
-            }
-        }
 
     }
 
@@ -148,6 +126,13 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         return email.matches(emailPattern.toRegex())
     }
 
+    private fun popupName() {
+        val popupView = LayoutInflater.from(this).inflate(R.layout.popup_name, null)
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.elevation = 10f
+        popupWindow.showAtLocation(binding.registerInputName, Gravity.TOP, 0, 0)
+    }
+
     private fun popupEmail() {
         val popupView = LayoutInflater.from(this).inflate(R.layout.popout_email, null)
         val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
@@ -165,6 +150,24 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     private fun observe() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.apiResponse.collect {
+                        when (it.status) {
+                            ApiStatus.LOADING -> loadingDialog.show("Signing In…")
+                            ApiStatus.SUCCESS -> {
+                                loadingDialog.dismiss()
+                                openActivity<LoginActivity>()
+                                finish()
+                            }
+                            ApiStatus.ERROR -> {
+                                loadingDialog.dismiss()
+                                binding.root.snacked("Register Failed")
+                            }
+                            else -> loadingDialog.setResponse(it.message ?: return@collect)
+                        }
+                    }
+                }
+
                 launch {
                     viewModel.schools.collect {
                         listSchools.addAll(it)

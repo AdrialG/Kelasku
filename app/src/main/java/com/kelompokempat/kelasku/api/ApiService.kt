@@ -86,9 +86,16 @@ interface ApiService {
         @Path("id") id : String?
     ): String
 
-    @POST("colek/{id}")
+    @FormUrlEncoded
+    @POST("colek")
     suspend fun colek(
-        @Path("id") id : String?
+        @Field("user_id") id : String?
+    ): String
+
+    @FormUrlEncoded
+    @POST("likes")
+    suspend fun like(
+        @Field("user_id") id : String?
     ): String
 
     @DELETE("auth/logout")

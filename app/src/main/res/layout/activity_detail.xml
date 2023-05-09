@@ -153,6 +153,7 @@
                 android:layout_marginHorizontal="10dp">
 
                 <ImageView
+                    android:id="@+id/detail_favourite"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/baseline_favorite_24"

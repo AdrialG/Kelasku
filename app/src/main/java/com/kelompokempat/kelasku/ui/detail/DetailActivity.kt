@@ -55,6 +55,17 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                         name = friends.name
                     }
                 }
+
+//                launch {
+//                    viewModel.apiResponse.collect {
+//                        if (it.status == ApiStatus.SUCCESS) {
+//                            colek()
+//                        }
+//                        else if (it.status == ApiStatus.ERROR) {
+//                            binding.root.snacked("You can only notify this user 3 times per day")
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -62,15 +73,21 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     private fun getFriendsData() {
         val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
         viewModel.getFriendsDetail(id)
-
     }
 
     private fun colek() {
         val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
         viewModel.colek(id)
-        binding.root.snacked("$name Colek'd")
+        binding.root.snacked("$name Notified")
         Timber.tag("notified").d(id.toString())
     }
+
+//    private fun like() {
+//        val id = intent.getStringExtra(Const.FRIENDS.FRIENDS_ID)
+//        viewModel.colek(id)
+//        binding.root.snacked("$name Notified")
+//        Timber.tag("notified").d(id.toString())
+//    }
 
     private fun whatsApp(number: String?) {
         val phoneNumber = "+62 + $number"

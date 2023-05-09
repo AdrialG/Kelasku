@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
@@ -220,16 +221,15 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         else {
             lifecycleScope.launch {
                 val compressedFilePicture = compressFile(filePhotoPicture!!)
-                val compressedFileBanner = compressFile(filePhotoBanner!!)
+//                val compressedFileBanner = compressFile(filePhotoBanner!!)
                 Timber.d("Picture File: $compressedFilePicture")
-                Timber.d("Banner File: $compressedFileBanner")
-                if (compressedFilePicture != null && compressedFileBanner != null) {
-                    viewModel.updateProfileAll(name, school, compressedFilePicture, compressedFileBanner)
+//                Timber.d("Banner File: $compressedFileBanner")
+                if (compressedFilePicture != null /*&& compressedFileBanner != null*/) {
+                    viewModel.updateProfilePicture(name, school, compressedFilePicture)
                 }
             }
         }
     }
-
     //MultiPart Gallery Profile Picture
     private var activityLauncherGallery =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -324,7 +324,14 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             }
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            binding.profilePicture.setImageBitmap(bitmap)
+
+            Glide
+                .with(this)
+                .load(bitmap)
+                .placeholder(R.drawable.default_pfp)
+                .error(R.drawable.default_pfp)
+                .into(binding.profilePicture)
+
             filePhotoPicture = file
             Timber.tag("checkfile").d("file : %s", filePhotoPicture)
         } catch (e: Exception) {
@@ -364,7 +371,14 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             }
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-            binding.profileBanner.setImageBitmap(bitmap)
+
+            Glide
+                .with(this)
+                .load(bitmap)
+                .placeholder(R.drawable.default_banner)
+                .error(R.drawable.default_banner)
+                .into(binding.profileBanner)
+
             filePhotoBanner = file
             Timber.tag("checkfile").d("file : %s", filePhotoPicture)
         } catch (e: Exception) {

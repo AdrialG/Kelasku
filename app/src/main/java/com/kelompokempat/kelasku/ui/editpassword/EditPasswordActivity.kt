@@ -1,16 +1,19 @@
 package com.kelompokempat.kelasku.ui.editpassword
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
+import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.EditPasswordActivityBinding
+import com.kelompokempat.kelasku.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,9 +62,20 @@ class EditPasswordActivity : BaseActivity<EditPasswordActivityBinding, EditPassw
         else if (passwordConfirmation != newPassword) {
             binding.root.snacked("Password and Confirm Password Must Match!")
             return
+
         } else {
 
-            viewModel.updatePassword(oldPassword, newPassword, passwordConfirmation)
+            val alert: AlertDialog.Builder = AlertDialog.Builder(this@EditPasswordActivity)
+            alert.setMessage("Do you wish to save these changes?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.updatePassword(oldPassword, newPassword, passwordConfirmation)
+                }
+                .setNegativeButton("No") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+
+            alert.show()
 
         }
 
@@ -74,6 +88,9 @@ class EditPasswordActivity : BaseActivity<EditPasswordActivityBinding, EditPassw
                             ApiStatus.SUCCESS -> {
                                 loadingDialog.dismiss()
                                 binding.root.snacked("Update Success")
+                                openActivity<HomeActivity> {
+                                    finish()
+                                }
                             }
                             ApiStatus.ERROR -> {
                                 loadingDialog.dismiss()

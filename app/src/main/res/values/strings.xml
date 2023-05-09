@@ -40,4 +40,5 @@
     <string name="got_it">Got It</string>
     <string name="password_must_be_a_minimum_of_8_characters">Password must be a minimum of 8 characters</string>
     <string name="email_must_follow_the_format_of_the_common_email_addresses">Email must follow the format of common email addresses</string>
+    <string name="name_can_t_be_less_than_5_characters">Name can\'t be less than 5 characters</string>
 </resources>
