@@ -188,47 +188,47 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
         }
 
-        if (filePhotoBanner == null) {
-            lifecycleScope.launch {
-                val compressedFile = compressFile(filePhotoPicture!!)
-                Timber.d("File: $compressedFile")
-                if (compressedFile != null) {
-                    viewModel.updateProfilePicture(name, school, compressedFile)
-                }
-            }
-
-            if (name == username) {
-                return
-            }
-
-        }
-
-        if (filePhotoPicture == null) {
-            lifecycleScope.launch {
-                val compressedFile = compressFile(filePhotoBanner!!)
-                Timber.d("File: $compressedFile")
-                if (compressedFile != null) {
-                    viewModel.updateProfileBanner(name, school, compressedFile)
-                }
-            }
-
-            if (name == username) {
-                return
-            }
-
-        }
-
-        else {
-            lifecycleScope.launch {
-                val compressedFilePicture = compressFile(filePhotoPicture!!)
-//                val compressedFileBanner = compressFile(filePhotoBanner!!)
-                Timber.d("Picture File: $compressedFilePicture")
-//                Timber.d("Banner File: $compressedFileBanner")
-                if (compressedFilePicture != null /*&& compressedFileBanner != null*/) {
-                    viewModel.updateProfilePicture(name, school, compressedFilePicture)
-                }
-            }
-        }
+//        if (filePhotoBanner == null) {
+//            lifecycleScope.launch {
+//                val compressedFile = compressFile(filePhotoPicture!!)
+//                Timber.d("File: $compressedFile")
+//                if (compressedFile != null) {
+//                    viewModel.updateProfilePicture(name, school, compressedFile)
+//                }
+//            }
+//
+//            if (name == username) {
+//                return
+//            }
+//
+//        }
+//
+//        if (filePhotoPicture == null) {
+//            lifecycleScope.launch {
+//                val compressedFile = compressFile(filePhotoBanner!!)
+//                Timber.d("File: $compressedFile")
+//                if (compressedFile != null) {
+//                    viewModel.updateProfileBanner(name, school, compressedFile)
+//                }
+//            }
+//
+//            if (name == username) {
+//                return
+//            }
+//
+//        }
+//
+//        else {
+//            lifecycleScope.launch {
+//                val compressedFilePicture = compressFile(filePhotoPicture!!)
+////                val compressedFileBanner = compressFile(filePhotoBanner!!)
+//                Timber.d("Picture File: $compressedFilePicture")
+////                Timber.d("Banner File: $compressedFileBanner")
+//                if (compressedFilePicture != null /*&& compressedFileBanner != null*/) {
+//                    viewModel.updateProfilePicture(name, school, compressedFilePicture)
+//                }
+//            }
+//        }
     }
     //MultiPart Gallery Profile Picture
     private var activityLauncherGallery =

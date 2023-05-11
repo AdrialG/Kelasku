@@ -55,7 +55,6 @@ class DetailViewModel @Inject constructor(
                 }
 
                 override suspend fun onError(response: ApiResponse) {
-                    super.onError(response)
                     _apiResponse.emit(ApiResponse().responseError())
                 }
             })

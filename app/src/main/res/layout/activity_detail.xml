@@ -145,7 +145,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/like_counter"
+                android:id="@+id/like_counter_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
@@ -156,7 +156,8 @@
                     android:id="@+id/detail_favourite"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/baseline_favorite_24"
+                    android:src="@drawable/selector_like"
+                    android:enabled='@{data.likeByYou}'
                     android:layout_gravity="center_horizontal"/>
 
                 <TextView

@@ -79,7 +79,8 @@
                         android:text='@{data.totalLikes.toString()}'
                         android:textSize="16sp"
                         android:fontFamily="@font/inter_medium"
-                        app:drawableTopCompat="@drawable/baseline_favorite_border_24"
+                        android:enabled='@{data.likeByYou}'
+                        app:drawableTopCompat="@drawable/selector_like"
                         app:drawableTint="@color/text_red"
                         android:drawablePadding="2dp"
                         android:layout_marginEnd="10dp"
