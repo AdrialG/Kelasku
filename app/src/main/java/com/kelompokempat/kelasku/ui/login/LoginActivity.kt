@@ -68,7 +68,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>(R.layou
             // Log and toast
             val msg = getString(R.string.msg_token_fmt, token)
             Timber.tag(ContentValues.TAG).d(msg)
-            session.setValue(Const.TOKEN.DEVICETOKEN, token)
+            session.setValue(Const.TOKEN.DEVICE_TOKEN, token)
         })
 
         lifecycleScope.launch {

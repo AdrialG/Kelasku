@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
@@ -16,7 +18,6 @@ import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -60,7 +61,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private var friendsSpecific = ArrayList<FriendsList?>()
 
     private lateinit var navigationView : View
-    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,12 +80,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         }
 
         onBackPressedDispatcher.addCallback(this, callback)
-
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                recreate()
-            }
-        }
 
         askNotificationPermission()
         observe()
@@ -186,7 +180,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             .initItem(friends) { _, data ->
                 val intent = Intent(this, DetailActivity::class.java)
                 intent.putExtra(Const.FRIENDS.FRIENDS_ID, data?.id)
-                launcher.launch(intent)
+                updateDataActivityResult.launch(intent)
             }
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -196,6 +190,16 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             }
         })
 
+    }
+
+    private val updateDataActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val dataUpdated = data?.getBooleanExtra("data_updated", false) ?: true
+            if (dataUpdated) {
+                recreate()
+            }
+        }
     }
 
     private fun observe() {
@@ -233,6 +237,12 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
     private fun getUser() {
         viewModel.getProfile()
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            setMenuPreview()
+        },1000)
+    }
+
+    private fun setMenuPreview() {
         navigationView = binding.homeNavigation.getHeaderView(0)
         val navPhoto = navigationView.findViewById<CircleImageView>(R.id.navigation_profile_picture)
         val navBanner = navigationView.findViewById<ImageView>(R.id.navigation_banner)
@@ -247,14 +257,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
             .with(navPhoto.context)
             .load(user?.photo)
             .placeholder(R.drawable.default_pfp)
-            .error(R.drawable.baseline_error_24)
+            .error(R.drawable.default_pfp)
             .into(navPhoto)
 
         Glide
             .with(navBanner.context)
             .load(user?.bannerPhoto)
             .placeholder(R.drawable.default_banner)
-            .error(R.drawable.baseline_error_24)
+            .error(R.drawable.default_banner)
             .into(navBanner)
     }
 

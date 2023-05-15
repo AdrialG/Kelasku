@@ -28,14 +28,16 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
     private var phoneNumber: String? = null
     private var name: String? = null
     private var likeByYou: Boolean? = null
-
+    private var dataUpdated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val callback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
-                setResult(Activity.RESULT_OK)
+                val intent = Intent()
+                intent.putExtra("data_updated", dataUpdated)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             }
         }
@@ -46,7 +48,9 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
         getFriendsData()
 
         binding.detailBack.setOnClickListener {
-            setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            intent.putExtra("data_updated", dataUpdated)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
 
@@ -56,10 +60,10 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 
         binding.likeCounterButton.setOnClickListener {
             like()
-            binding.likeCounterButton.postDelayed({
-                // Delayed code to be executed
-                recreate()
-            }, 1000) // Delay time in milliseconds
+//            binding.likeCounterButton.postDelayed({
+//                // Delayed code to be executed
+//                recreate()
+//            }, 1000) // Delay time in milliseconds
         }
 
         binding.buttonWhatsapp.setOnClickListener {
@@ -104,7 +108,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                             binding.root.snacked("$name Notified")
                         }
                         else if (it.status == ApiStatus.ERROR) {
-                            binding.root.snacked("You can only notify 10 times per day")
+                            binding.root.snacked("You can only notify this user 3 times per day")
                         }
                     }
                 }
@@ -119,11 +123,13 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 
         if (likeByYou == true) {
             binding.root.snacked("$name Unliked")
+            binding.detailFavourite.setImageResource(R.drawable.baseline_favorite_border_24)
         }
         else if (likeByYou == false) {
             binding.root.snacked("$name Liked")
+            binding.detailFavourite.setImageResource(R.drawable.baseline_favorite_24)
         }
-
+        dataUpdated = true
     }
 
     private fun whatsApp(number: String?) {
