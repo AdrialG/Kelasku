@@ -62,34 +62,37 @@ class EditProfileViewModel @Inject constructor(
             })
     }
 
-    fun updateProfile(name: String, school: String) = viewModelScope.launch {
-        observer(
-            block = { apiService.updateProfile(name, school) },
-            toast = false,
-            responseListener = object : ApiObserver.ResponseListener{
-                override suspend fun onSuccess(response: JSONObject) {
-                    val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
-                    _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
-                    session.saveUser(data)
-                }
+    fun updateProfile(name: String, school: String) =
+        viewModelScope.launch {
+            observer(
+                block = {
+                    apiService.updateProfile(name, school)
+                },
+                toast = false,
+                responseListener = object : ApiObserver.ResponseListener {
+                    override suspend fun onSuccess(response: JSONObject) {
+                        _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
+                    }
 
-                override suspend fun onError(response: ApiResponse) {
-                    super.onError(response)
-                    _apiResponse.emit(ApiResponse().responseError())
-                }
-            })
-    }
+                    override suspend fun onError(response: ApiResponse) {
+                        super.onError(response)
+                        _apiResponse.emit(ApiResponse().responseError())
+                    }
+                })
+        }
 
     fun updateProfilePicture(name: String, school: String, photo: File) =
         viewModelScope.launch {
             val fileBody = photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val filePart = MultipartBody.Part.createFormData("image", photo.name, fileBody)
-            ApiObserver({ apiService.updateProfilePicture(name, school, filePart) },
-                false, object : ApiObserver.ResponseListener {
+            observer(
+                block = {
+                    apiService.updateProfilePicture(name, school, filePart)
+                },
+                toast = false,
+                responseListener = object : ApiObserver.ResponseListener {
                     override suspend fun onSuccess(response: JSONObject) {
-                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                         _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
-                        session.saveUser(data)
                     }
 
                     override suspend fun onError(response: ApiResponse) {
@@ -103,12 +106,14 @@ class EditProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val fileBody = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val filePart = MultipartBody.Part.createFormData("image", banner_photo.name, fileBody)
-            ApiObserver({ apiService.updateProfileBanner(name, school, filePart) },
-                false, object : ApiObserver.ResponseListener {
+            observer(
+                block = {
+                    apiService.updateProfileBanner(name, school, filePart)
+                },
+                toast = false,
+                responseListener = object : ApiObserver.ResponseListener {
                     override suspend fun onSuccess(response: JSONObject) {
-                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                         _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
-                        session.saveUser(data)
                     }
 
                     override suspend fun onError(response: ApiResponse) {
@@ -124,12 +129,14 @@ class EditProfileViewModel @Inject constructor(
             val filePartPicture = MultipartBody.Part.createFormData("image", photo.name, fileBodyPicture)
             val fileBodyBanner = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
             val filePartBanner = MultipartBody.Part.createFormData("image", banner_photo.name, fileBodyBanner)
-            ApiObserver({ apiService.updateProfileAll(name, school, filePartPicture, filePartBanner) },
-                false, object : ApiObserver.ResponseListener {
+            observer(
+                block = {
+                    apiService.updateProfileAll(name, school, filePartPicture, filePartBanner)
+                },
+                toast = false,
+                responseListener = object : ApiObserver.ResponseListener {
                     override suspend fun onSuccess(response: JSONObject) {
-                        val data = response.getJSONObject(ApiCode.DATA).toObject<User>(gson)
                         _apiResponse.emit(ApiResponse().responseSuccess("Profile Updated"))
-                        session.saveUser(data)
                     }
 
                     override suspend fun onError(response: ApiResponse) {

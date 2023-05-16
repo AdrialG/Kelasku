@@ -12,8 +12,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
@@ -41,6 +39,7 @@ import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.detail.DetailActivity
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
+import com.kelompokempat.kelasku.ui.history.HistoryActivity
 import com.kelompokempat.kelasku.ui.login.LoginActivity
 import com.kelompokempat.kelasku.ui.profile.ProfileActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,15 +85,6 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
         getUser()
         getFriends()
 
-        val recyclerStartAnim = LayoutAnimationController(AnimationUtils.loadAnimation(this, R.anim.home_item_start_anim))
-        recyclerStartAnim.delay = 0.20f
-        recyclerStartAnim.order = LayoutAnimationController.ORDER_NORMAL
-        binding.homeRecycler.layoutAnimation = recyclerStartAnim
-
-        binding.textTop.setOnClickListener {
-            binding.homeRecycler.layoutAnimation = recyclerStartAnim
-        }
-
         binding.homeOpenNav.setOnClickListener {
             this.binding.homeDrawerLayout.openDrawer(GravityCompat.START)
         }
@@ -110,8 +100,13 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                     openActivity<ProfileActivity>()
                     return@setNavigationItemSelectedListener true
                 }
+                R.id.nav_history -> {
+                    openActivity<HistoryActivity>()
+                    return@setNavigationItemSelectedListener true
+                }
                 R.id.nav_edit_profile -> {
-                    openActivity<EditProfileActivity>()
+                    val intent = Intent(this, EditProfileActivity::class.java)
+                    updateDataActivityResult.launch(intent)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_edit_password -> {

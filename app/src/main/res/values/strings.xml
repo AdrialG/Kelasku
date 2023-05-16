@@ -43,4 +43,8 @@
     <string name="name_can_t_be_less_than_5_characters">Name can\'t be less than 5 characters</string>
     <string name="history">History</string>
     <string name="edit_banner">Edit Banner</string>
+    <string name="profile">Profile</string>
+    <string name="like_history">Like History</string>
+    <string name="profile_settings">Profile Settings</string>
+    <string name="logout">Logout</string>
 </resources>

@@ -24,14 +24,14 @@ interface ApiService {
     @FormUrlEncoded
     @POST("user/profile")
     suspend fun updateProfile(
-        @Field("name") name : String,
+        @Field("name") name : String?,
         @Field("school_id") school : String
     ): String
 
     @Multipart
     @POST("user/profile")
     suspend fun updateProfilePicture(
-        @Part("name") name : String,
+        @Part("name") name : String?,
         @Part("school_id") school : String,
         @Part photo : MultipartBody.Part?
     ): String
@@ -40,7 +40,7 @@ interface ApiService {
     @Multipart
     @POST("user/profile")
     suspend fun updateProfileBanner(
-        @Part("name") name : String,
+        @Part("name") name : String?,
         @Part("school_id") school : String,
         @Part banner_photo : MultipartBody.Part?
     ): String
@@ -48,7 +48,7 @@ interface ApiService {
     @Multipart
     @POST("user/profile")
     suspend fun updateProfileAll(
-        @Part("name") name : String,
+        @Part("name") name : String?,
         @Part("school_id") school : String,
         @Part photo : MultipartBody.Part?,
         @Part banner_photo : MultipartBody.Part?
@@ -84,6 +84,10 @@ interface ApiService {
     @GET("friends/{id}")
     suspend fun getFriendsDetail(
         @Path("id") id : String?
+    ): String
+
+    @GET("likes/me")
+    suspend fun getLikesHistory(
     ): String
 
     @FormUrlEncoded

@@ -6,26 +6,31 @@
 
     <item
         android:id="@+id/nav_profile"
-        android:title="Profile"
+        android:title="@string/profile"
         android:icon="@drawable/ic_baseline_person_24"/>
 
-    <item android:title="Profile Settings">
+    <item
+        android:id="@+id/nav_history"
+        android:title="@string/like_history"
+        android:icon="@drawable/alerter_ic_notifications"/>
+
+    <item android:title="@string/profile_settings">
 
         <menu>
 
             <item
                 android:id="@+id/nav_edit_profile"
-                android:title="Edit Profile"
+                android:title="@string/edit_profile"
                 android:icon="@drawable/ic_baseline_edit_note_24"/>
 
             <item
                 android:id="@+id/nav_edit_password"
-                android:title="Edit Password"
+                android:title="@string/edit_password"
                 android:icon="@drawable/ic_baseline_edit_24"/>
 
             <item
                 android:id="@+id/nav_logout"
-                android:title="Logout"
+                android:title="@string/logout"
                 android:icon="@drawable/ic_baseline_logout_24"/>
 
         </menu>

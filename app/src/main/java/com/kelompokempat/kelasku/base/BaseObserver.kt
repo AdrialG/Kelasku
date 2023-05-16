@@ -1,12 +1,8 @@
 package com.kelompokempat.kelasku.base
 
-
-import android.content.Context
 import com.crocodic.core.api.ApiObserver
 import com.crocodic.core.api.ApiResponse
 import com.crocodic.core.data.CoreSession
-import com.google.android.datatransport.runtime.dagger.Module
-import com.google.android.datatransport.runtime.dagger.Provides
 import com.kelompokempat.kelasku.api.ApiService
 import com.kelompokempat.kelasku.data.Const
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,11 +11,6 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 open class BaseObserver @Inject constructor(private val apiService: ApiService, private val session: CoreSession) {
-
-//    @Provides
-//    open fun provideCoreSession(): CoreSession{
-//        return CoreSession(context = )
-//    }
 
     operator fun invoke (block : suspend() -> String, dispacher : CoroutineDispatcher = Dispatchers.IO, toast : Boolean = false, responseListener: ApiObserver.ResponseListener) {
         ApiObserver(block, responseListener = object : ApiObserver.ResponseListener {

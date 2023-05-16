@@ -1,6 +1,7 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,6 +15,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -56,10 +58,22 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     private var filePhotoBanner: File? = null
 
     private val listSchools = ArrayList<Schools>()
-    private var schoolId: String? = null
+    private var schoolId: String = "0"
+    private var dataUpdated = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true /* enabled by default */) {
+            override fun handleOnBackPressed() {
+                val intent = Intent()
+                intent.putExtra("data_updated", dataUpdated)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(this, callback)
 
         observe()
         getSchools()
@@ -69,12 +83,15 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         val user = session.getUser()
         if (user != null) {
             binding.data = user
+            schoolId = user.school?.id.toString()
         }
 
         binding.editProfileBack.setOnClickListener {
+            val intent = Intent()
+            intent.putExtra("data_updated", dataUpdated)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
-
 
         binding.profilePictureEdit.setOnClickListener {
 //            if (checkPermissionGallery()) {
@@ -105,6 +122,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                             ApiStatus.SUCCESS -> {
                                 binding.root.snacked(it.message ?: "Profile Updated")
                                 loadingDialog.dismiss()
+                                dataUpdated = true
                             }
 
                             ApiStatus.ERROR -> {
@@ -168,26 +186,47 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
     private fun validateForm() {
         val name = binding.editName.textOf()
-        val school = binding.editInputSchool.textOf()
+        val school = schoolId
 
-        if (name.isEmpty()) {
-            binding.root.snacked("Name Can't Be Empty.")
+        //condition 1 : if all is empty
+        if (name.isEmpty() &&
+            school?.isEmpty() == true &&
+            filePhotoPicture == null &&
+            binding.data?.photo == null &&
+            filePhotoBanner == null  &&
+            binding.data?.bannerPhoto == null) {
+            binding.root.snacked("Everything needs to be filled.")
             return
         }
 
-        if (school.isEmpty()) {
-            binding.root.snacked("School Can't Be Empty.")
+        //condition 2 : if nothing changes
+        if (name == binding.data?.name &&
+            school == binding.data?.school?.school_name &&
+            filePhotoPicture == null &&
+            filePhotoBanner == null) {
+            binding.root.snacked("Nothing has changed.")
             return
         }
 
-        if (filePhotoPicture == null && filePhotoBanner == null) {
-            if (name == username) {
-                return
+        lifecycleScope.launch {
+            val compressedFilePicture = filePhotoPicture?.let { compressFile(it) }
+            val compressedFileBanner = filePhotoBanner?.let { compressFile(it) }
+
+            if (compressedFilePicture != null && compressedFileBanner != null) {
+                viewModel.updateProfileAll(name, school, compressedFilePicture, compressedFileBanner)
+            } else {
+                viewModel.updateProfile(name, school)
             }
-            viewModel.updateProfile(name, school)
-
         }
 
+//        if (filePhotoPicture == null && filePhotoBanner == null) {
+//            if (name == username) {
+//                return
+//            }
+//            viewModel.updateProfile(name, school)
+//
+//        }
+//
 //        if (filePhotoBanner == null) {
 //            lifecycleScope.launch {
 //                val compressedFile = compressFile(filePhotoPicture!!)
@@ -230,6 +269,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 //            }
 //        }
     }
+
     //MultiPart Gallery Profile Picture
     private var activityLauncherGallery =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

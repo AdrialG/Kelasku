@@ -60,10 +60,6 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
 
         binding.likeCounterButton.setOnClickListener {
             like()
-//            binding.likeCounterButton.postDelayed({
-//                // Delayed code to be executed
-//                recreate()
-//            }, 1000) // Delay time in milliseconds
         }
 
         binding.buttonWhatsapp.setOnClickListener {
