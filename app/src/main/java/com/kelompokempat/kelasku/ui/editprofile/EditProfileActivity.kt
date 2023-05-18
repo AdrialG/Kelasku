@@ -193,7 +193,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             filePhotoPicture == null &&
             binding.data?.photo == null &&
             filePhotoBanner == null &&
-            binding.data?.bannerPhoto == null) {
+            binding.data?.bannerPhoto == null
+        ) {
             binding.root.snacked("Everything needs to be filled.")
             return
         }
@@ -202,7 +203,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         if (name == binding.data?.name &&
             school == binding.data?.school?.school_name &&
             filePhotoPicture == null &&
-            filePhotoBanner == null) {
+            filePhotoBanner == null
+        ) {
             binding.root.snacked("Nothing has changed.")
             return
         }
@@ -218,55 +220,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             }
         }
 
-//        if (filePhotoPicture == null && filePhotoBanner == null) {
-//            if (name == username) {
-//                return
-//            }
-//            viewModel.updateProfile(name, school)
-//
-//        }
-//
-//        if (filePhotoBanner == null) {
-//            lifecycleScope.launch {
-//                val compressedFile = compressFile(filePhotoPicture!!)
-//                Timber.d("File: $compressedFile")
-//                if (compressedFile != null) {
-//                    viewModel.updateProfilePicture(name, school, compressedFile)
-//                }
-//            }
-//
-//            if (name == username) {
-//                return
-//            }
-//
-//        }
-//
-//        if (filePhotoPicture == null) {
-//            lifecycleScope.launch {
-//                val compressedFile = compressFile(filePhotoBanner!!)
-//                Timber.d("File: $compressedFile")
-//                if (compressedFile != null) {
-//                    viewModel.updateProfileBanner(name, school, compressedFile)
-//                }
-//            }
-//
-//            if (name == username) {
-//                return
-//            }
-//
-//        }
-//
-//        else {
-//            lifecycleScope.launch {
-//                val compressedFilePicture = compressFile(filePhotoPicture!!)
-////                val compressedFileBanner = compressFile(filePhotoBanner!!)
-//                Timber.d("Picture File: $compressedFilePicture")
-////                Timber.d("Banner File: $compressedFileBanner")
-//                if (compressedFilePicture != null /*&& compressedFileBanner != null*/) {
-//                    viewModel.updateProfilePicture(name, school, compressedFilePicture)
-//                }
-//            }
-//        }
     }
 
     //MultiPart Gallery Profile Picture
