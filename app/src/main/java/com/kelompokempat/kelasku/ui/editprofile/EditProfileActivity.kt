@@ -53,7 +53,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     @Inject
     lateinit var session : Session
 
-    private var username: String? = null
     private var filePhotoPicture: File? = null
     private var filePhotoBanner: File? = null
 
@@ -190,10 +189,10 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
         //condition 1 : if all is empty
         if (name.isEmpty() &&
-            school?.isEmpty() == true &&
+            school.isEmpty() &&
             filePhotoPicture == null &&
             binding.data?.photo == null &&
-            filePhotoBanner == null  &&
+            filePhotoBanner == null &&
             binding.data?.bannerPhoto == null) {
             binding.root.snacked("Everything needs to be filled.")
             return

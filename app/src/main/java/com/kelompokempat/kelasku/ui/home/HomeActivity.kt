@@ -37,6 +37,7 @@ import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityHomeBinding
 import com.kelompokempat.kelasku.databinding.ItemHomeRecyclerBinding
 import com.kelompokempat.kelasku.ui.detail.DetailActivity
+import com.kelompokempat.kelasku.ui.editcredentials.EditCredentialsActivity
 import com.kelompokempat.kelasku.ui.editpassword.EditPasswordActivity
 import com.kelompokempat.kelasku.ui.editprofile.EditProfileActivity
 import com.kelompokempat.kelasku.ui.history.HistoryActivity
@@ -107,6 +108,10 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>(R.layout.a
                 R.id.nav_edit_profile -> {
                     val intent = Intent(this, EditProfileActivity::class.java)
                     updateDataActivityResult.launch(intent)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_edit_credentials -> {
+                    openActivity<EditCredentialsActivity>()
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_edit_password -> {

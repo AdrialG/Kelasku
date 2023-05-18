@@ -55,6 +55,13 @@ interface ApiService {
     ): String
 
     @FormUrlEncoded
+    @POST("user/profile")
+    suspend fun updateProfileCredentials(
+        @Field("phone") phone : String?,
+        @Field("email") email : String
+    ): String
+
+    @FormUrlEncoded
     @POST("auth/register")
     suspend fun register(
         @Field("name") name: String,
