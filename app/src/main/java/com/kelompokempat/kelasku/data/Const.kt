@@ -10,5 +10,4 @@ object Const {
     object FRIENDS {
         const val FRIENDS_ID ="id"
     }
-
 }

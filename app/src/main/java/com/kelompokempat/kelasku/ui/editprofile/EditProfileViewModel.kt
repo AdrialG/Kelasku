@@ -84,7 +84,7 @@ class EditProfileViewModel @Inject constructor(
     fun updateProfilePicture(name: String, school: String, photo: File) =
         viewModelScope.launch {
             val fileBody = photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            val filePart = MultipartBody.Part.createFormData("image", photo.name, fileBody)
+            val filePart = MultipartBody.Part.createFormData("photo", photo.name, fileBody)
             observer(
                 block = {
                     apiService.updateProfilePicture(name, school, filePart)
@@ -105,7 +105,7 @@ class EditProfileViewModel @Inject constructor(
     fun updateProfileBanner(name: String, school: String, banner_photo: File) =
         viewModelScope.launch {
             val fileBody = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            val filePart = MultipartBody.Part.createFormData("image", banner_photo.name, fileBody)
+            val filePart = MultipartBody.Part.createFormData("banner_photo", banner_photo.name, fileBody)
             observer(
                 block = {
                     apiService.updateProfileBanner(name, school, filePart)
@@ -123,12 +123,12 @@ class EditProfileViewModel @Inject constructor(
                 })
         }
 
-    fun updateProfileAll(name: String, school: String, photo: File, banner_photo: File) =
+    fun updateProfileAll(name: String, school: String, profilePictureFile: File, profileBannerFile: File) =
         viewModelScope.launch {
-            val fileBodyPicture = photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            val filePartPicture = MultipartBody.Part.createFormData("image", photo.name, fileBodyPicture)
-            val fileBodyBanner = banner_photo.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-            val filePartBanner = MultipartBody.Part.createFormData("image", banner_photo.name, fileBodyBanner)
+            val fileBodyPicture = profilePictureFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePartPicture = MultipartBody.Part.createFormData("photo", profilePictureFile.name, fileBodyPicture)
+            val fileBodyBanner = profileBannerFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+            val filePartBanner = MultipartBody.Part.createFormData("banner_photo", profileBannerFile.name, fileBodyBanner)
             observer(
                 block = {
                     apiService.updateProfileAll(name, school, filePartPicture, filePartBanner)
@@ -145,6 +145,5 @@ class EditProfileViewModel @Inject constructor(
                     }
                 })
         }
-
 
 }
