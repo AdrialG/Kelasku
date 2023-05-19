@@ -1,19 +1,25 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
+import com.crocodic.core.extension.tos
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
@@ -30,6 +36,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     @Inject
     lateinit var session : Session
 
+    private val galleryPermissionRequestCode = 100
+
     private var profilePictureUri: Uri? = null
     private var profileBannerUri: Uri? = null
 
@@ -42,6 +50,20 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted, request it
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                galleryPermissionRequestCode
+            )
+        } else {
+            // Permission is already granted, continue with your logic
+            // ...
+        }
 
         val callback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
@@ -121,6 +143,37 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                         autoCompleteSpinnerEdit.setAdapter(adapter)
                     }
                 }
+            }
+        }
+    }
+
+    private fun checkPermissionGallery() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted, request it
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                galleryPermissionRequestCode
+            )
+        } else {
+            // Permission is already granted, continue with your logic
+            // ...
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == galleryPermissionRequestCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                tos("Gallery Permission Granted")
+            } else {
+                tos("Gallery Permission Denied")
             }
         }
     }

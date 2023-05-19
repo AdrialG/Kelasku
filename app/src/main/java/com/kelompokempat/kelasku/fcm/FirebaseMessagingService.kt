@@ -1,13 +1,20 @@
 package com.kelompokempat.kelasku.fcm
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
+import com.crocodic.core.base.activity.NoViewModelActivity.BetterActivityResult.Companion.registerForActivityResult
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.kelompokempat.kelasku.R
+import com.kelompokempat.kelasku.data.Const
+import com.kelompokempat.kelasku.ui.detail.DetailActivity
 import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService() {
@@ -39,8 +46,8 @@ private fun sendRegistrationToServer(token: String?) {
     Timber.d("sendRegistrationTokenToServer($token)")
 }
 
-@SuppressLint("ObsoleteSdkInt")
-fun showNotification(context: Context, notificationId: Int, user_id: String, title: String, message: String) {
+@SuppressLint("ObsoleteSdkInt", "UnspecifiedImmutableFlag")
+fun showNotification(context: Context, notificationId: Int, userId: String, title: String, message: String) {
     // Notification Manager
     val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -57,14 +64,24 @@ fun showNotification(context: Context, notificationId: Int, user_id: String, tit
         notificationManager.createNotificationChannel(channel)
     }
 
-    // Builder
+    // Create an intent to open the activity when the notification is clicked
+    val intent = Intent(context, DetailActivity::class.java)
+    intent.putExtra(Const.FRIENDS.FRIENDS_ID, userId)
+
+    val pendingIntent = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+    } else {
+        PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
     val builder = NotificationCompat.Builder(context, "CHANNEL_ID")
         .setSmallIcon(R.drawable.logo)
-        .setContentInfo(user_id)
+        .setContentInfo(userId)
         .setContentTitle(title)
         .setContentText(message)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
 
-    // Show Notification
     notificationManager.notify(notificationId, builder.build())
 }
