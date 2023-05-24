@@ -1,12 +1,12 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
 import android.Manifest
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ArrayAdapter
@@ -26,7 +26,13 @@ import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.EditProfileActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -50,20 +56,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                galleryPermissionRequestCode
-            )
-        } else {
-            // Permission is already granted, continue with your logic
-            // ...
-        }
 
         val callback = object : OnBackPressedCallback(true /* enabled by default */) {
             override fun handleOnBackPressed() {
@@ -95,11 +87,19 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
 
         binding.profilePictureEdit.setOnClickListener {
-            openGallery(1)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                requestGalleryPermission(1)
+            } else {
+              openGallery(1)
+            }
         }
 
         binding.bannerEdit.setOnClickListener {
-            openGallery(2)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                requestGalleryPermission(2)
+            } else {
+                openGallery(2)
+            }
         }
 
         binding.saveButton.setOnClickListener {
@@ -147,33 +147,63 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
     }
 
-    private fun checkPermissionGallery() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(
+    private fun isGalleryPermissionGranted(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // For Android 10 and above, check if the permission is granted using the new media permission
+            ContextCompat.checkSelfPermission(
                 this,
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                galleryPermissionRequestCode
-            )
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
-            // Permission is already granted, continue with your logic
-            // ...
+            // For Android 9 and below, check if the permission is granted using the old storage permission
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == galleryPermissionRequestCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                tos("Gallery Permission Granted")
+    private fun requestGalleryPermission(requestCode: Int) {
+        if (isGalleryPermissionGranted()) {
+            // Permission already granted, perform gallery-related operations
+            if (requestCode == 1) {
+                openGallery(1)
+            }
+            if (requestCode == 2) {
+                openGallery(2)
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // For Android 10 and above, request the permission directly
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    galleryPermissionRequestCode
+                )
             } else {
-                tos("Gallery Permission Denied")
+                // For Android 9 and below, show a rationale dialogue explaining the need for permission
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Gallery Permission")
+                        .setMessage("This app requires access to your gallery to function properly.")
+                        .setPositiveButton("Grant") { _, _ ->
+                            ActivityCompat.requestPermissions(
+                                this,
+                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                                galleryPermissionRequestCode
+                            )
+                        }
+                        .setNegativeButton("Deny") { _, _ ->
+                            tos("Gallery Permission Denied")
+                        }
+                        .show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                        galleryPermissionRequestCode
+                    )
+                }
             }
         }
     }
@@ -265,26 +295,53 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         if (resultCode == RESULT_OK) {
             if (requestCode == pickProfilePictureRequest) {
                 profilePictureUri = data?.data
-                binding.profilePicture.setImageURI(profilePictureUri)
+                profilePictureUri?.let { uri ->
+                    // Call compressImage from a coroutine
+                    lifecycleScope.launch {
+                        val compressedImage = compressImage(uri)
+                        // Set the compressed image to the ImageView
+                        binding.profilePicture.setImageURI(compressedImage)
+                    }
+                }
             } else if (requestCode == pickProfileBannerRequest) {
                 profileBannerUri = data?.data
-                binding.profileBanner.setImageURI(profileBannerUri)
+                profileBannerUri?.let { uri ->
+                    // Call compressImage from a coroutine
+                    lifecycleScope.launch {
+                        val compressedImage = compressImage(uri)
+                        // Set the compressed image to the ImageView
+                        binding.profileBanner.setImageURI(compressedImage)
+                    }
+                }
             }
         }
     }
 
-    private fun getRealPathFromURI(uri: Uri): String? {
-        val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
-        cursor?.use { innerCursor ->
-            if (innerCursor.moveToFirst()) {
-                val columnIndex = innerCursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-                if (columnIndex >= 0) {
-                    return innerCursor.getString(columnIndex)
-                }
+    private suspend fun compressImage(uri: Uri): Uri? = withContext(Dispatchers.IO) {
+        val filePath = getRealPathFromURI(uri) // Retrieve the file path from the URI
+        val file = filePath?.let { File(it) }
+        val compressedFile = file?.let {
+            Compressor.compress(this@EditProfileActivity, it) {
+                default()
+                resolution(720, 720)
+                quality(80)
             }
         }
-        cursor?.close()
-        return null
+        return@withContext compressedFile?.let { Uri.fromFile(it) }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        var realPath: String? = null
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.let {
+            if (it.moveToFirst()) {
+                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                realPath = it.getString(columnIndex)
+            }
+            cursor.close()
+        }
+        return realPath
     }
 
 }
