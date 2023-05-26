@@ -1,10 +1,12 @@
 package com.kelompokempat.kelasku.ui.editprofile
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,21 +21,18 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
 import com.crocodic.core.extension.snacked
 import com.crocodic.core.extension.textOf
-import com.crocodic.core.extension.tos
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Schools
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.EditProfileActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
-import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.default
-import id.zelory.compressor.constraint.quality
-import id.zelory.compressor.constraint.resolution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -147,6 +146,7 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun isGalleryPermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // For Android 10 and above, check if the permission is granted using the new media permission
@@ -173,38 +173,12 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
                 openGallery(2)
             }
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // For Android 10 and above, request the permission directly
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    galleryPermissionRequestCode
-                )
-            } else {
-                // For Android 9 and below, show a rationale dialogue explaining the need for permission
-                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    AlertDialog.Builder(this)
-                        .setTitle("Gallery Permission")
-                        .setMessage("This app requires access to your gallery to function properly.")
-                        .setPositiveButton("Grant") { _, _ ->
-                            ActivityCompat.requestPermissions(
-                                this,
-                                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                                galleryPermissionRequestCode
-                            )
-                        }
-                        .setNegativeButton("Deny") { _, _ ->
-                            tos("Gallery Permission Denied")
-                        }
-                        .show()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        galleryPermissionRequestCode
-                    )
-                }
-            }
+            // For Android 10 and above, request the permission directly
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                galleryPermissionRequestCode
+            )
         }
     }
 
@@ -262,8 +236,26 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
             return
         }
 
-        val compressedFilePicture = profilePictureUri?.let { getFileFromUri(it) }
-        val compressedFileBanner = profileBannerUri?.let { getFileFromUri(it) }
+        val compressedFilePicture = this.profilePictureUri?.let { uri ->
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val file = createTempFile("compressed_image", ".jpg")
+                FileOutputStream(file).use { outputStream ->
+                    compressImage(inputStream, outputStream)
+                }
+                file
+            }
+        }
+
+        val compressedFileBanner = this.profileBannerUri?.let { uri ->
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val file = createTempFile("compressed_image", ".jpg")
+                FileOutputStream(file).use { outputStream ->
+                    compressImage(inputStream, outputStream)
+                }
+                file
+            }
+        }
+
 
         lifecycleScope.launch {
             if (compressedFilePicture != null && compressedFileBanner != null) {
@@ -278,11 +270,6 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
         }
     }
 
-    private fun getFileFromUri(uri: Uri): File {
-        val filePath = getRealPathFromURI(uri)
-        return File(filePath.toString())
-    }
-
     private fun openGallery(requestCode: Int) {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, requestCode)
@@ -294,8 +281,8 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
 
         if (resultCode == RESULT_OK) {
             if (requestCode == pickProfilePictureRequest) {
-                profilePictureUri = data?.data
-                profilePictureUri?.let { uri ->
+                this.profilePictureUri = data?.data
+                this.profilePictureUri?.let { uri ->
                     // Call compressImage from a coroutine
                     lifecycleScope.launch {
                         val compressedImage = compressImage(uri)
@@ -318,30 +305,24 @@ class EditProfileActivity : BaseActivity<EditProfileActivityBinding, EditProfile
     }
 
     private suspend fun compressImage(uri: Uri): Uri? = withContext(Dispatchers.IO) {
-        val filePath = getRealPathFromURI(uri) // Retrieve the file path from the URI
-        val file = filePath?.let { File(it) }
-        val compressedFile = file?.let {
-            Compressor.compress(this@EditProfileActivity, it) {
-                default()
-                resolution(720, 720)
-                quality(80)
-            }
-        }
-        return@withContext compressedFile?.let { Uri.fromFile(it) }
+        val inputStream = contentResolver.openInputStream(uri)
+        val file = createTempFile("compressed_image", ".jpg")
+        val outputStream = FileOutputStream(file)
+        compressImage(inputStream, outputStream)
+        inputStream?.close()
+        outputStream.close()
+        return@withContext Uri.fromFile(file)
     }
 
-    private fun getRealPathFromURI(uri: Uri): String? {
-        var realPath: String? = null
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-        cursor?.let {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                realPath = it.getString(columnIndex)
+    private fun compressImage(inputStream: InputStream?, outputStream: OutputStream) {
+        inputStream?.let { input ->
+            val options = BitmapFactory.Options().apply {
+                this.inSampleSize = 2 // Adjust the inSampleSize as needed for your requirements
             }
-            cursor.close()
+            val bitmap = BitmapFactory.decodeStream(input, null, options)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+            bitmap?.recycle()
         }
-        return realPath
     }
 
 }
