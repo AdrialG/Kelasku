@@ -12,11 +12,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.base.adapter.CoreListAdapter
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
-import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.HistoryList
 import com.kelompokempat.kelasku.databinding.ActivityHistoryBinding
 import com.kelompokempat.kelasku.databinding.ItemHistoryRecyclerBinding
-import com.kelompokempat.kelasku.ui.detail.DetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -53,7 +51,7 @@ class HistoryActivity : BaseActivity<ActivityHistoryBinding, HistoryViewModel>(R
         }
 
         binding.historyRecycler.adapter = CoreListAdapter<ItemHistoryRecyclerBinding, HistoryList>(R.layout.item_history_recycler)
-            .initItem(history) { _, data ->
+            .initItem(history) { _, _ ->
             }
 
     }

@@ -46,12 +46,12 @@ class EditCredentialsActivity : BaseActivity<ActivityEditCredentialsBinding, Edi
         val email = binding.editEmail.textOf()
 
         if (phone.isEmpty()) {
-            binding.root.snacked("Please Insert Your Old Password")
+            binding.root.snacked("Please Insert a Phone Number")
             return
         }
 
         if (email.isEmpty()) {
-            binding.root.snacked("Please Insert Your New Password")
+            binding.root.snacked("Please Insert an Email")
             return
         }
 

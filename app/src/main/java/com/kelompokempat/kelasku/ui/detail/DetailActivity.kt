@@ -9,12 +9,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.crocodic.core.api.ApiStatus
+import com.crocodic.core.extension.openActivity
 import com.crocodic.core.extension.snacked
 import com.kelompokempat.kelasku.R
 import com.kelompokempat.kelasku.base.BaseActivity
 import com.kelompokempat.kelasku.data.Const
 import com.kelompokempat.kelasku.data.Session
 import com.kelompokempat.kelasku.databinding.ActivityDetailBinding
+import com.kelompokempat.kelasku.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,7 +40,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                 val intent = Intent()
                 intent.putExtra("data_updated", dataUpdated)
                 setResult(Activity.RESULT_OK, intent)
-                finish()
+                openActivity<HomeActivity>()
             }
         }
 
@@ -51,7 +53,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
             val intent = Intent()
             intent.putExtra("data_updated", dataUpdated)
             setResult(Activity.RESULT_OK, intent)
-            finish()
+            openActivity<HomeActivity>()
         }
 
         binding.buttonAlert.setOnClickListener {
@@ -104,7 +106,7 @@ class DetailActivity : BaseActivity<ActivityDetailBinding, DetailViewModel>(R.la
                             binding.root.snacked("$name Notified")
                         }
                         else if (it.status == ApiStatus.ERROR) {
-                            binding.root.snacked("You can only notify this user 3 times per day")
+                            binding.root.snacked("You can only notify 10 times per day")
                         }
                     }
                 }
